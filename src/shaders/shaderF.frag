@@ -23,7 +23,7 @@ vec2 fixOpenGLTextureCoords_AxisY(vec2 uv) {
 }
 
 vec3 readModelTexture_RGB8UI(usampler2D tex, vec2 coords) {
-  coords = fixOpenGLTextureCoords_AxisY(coords);
+  // coords = fixOpenGLTextureCoords_AxisY(coords);
   uvec3 texAsUint = texture(tex, coords).rgb; // as uint [0-255]
   return vec3(texAsUint) / 255.0;
 }
@@ -34,4 +34,5 @@ void main() {
   // vec3 texAsFloat = vec3(result) / 255.0;
   vec3 result = readModelTexture_RGB8UI(u_image, v_uv);
   color1 = vec4(result, 1.0f);
+  // color1 = vec4(1.0f, 0.0f, 1.0f, 1.0f);
 }

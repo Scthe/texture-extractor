@@ -75,8 +75,8 @@ const DEFAULT_TEXTURE_OPTS: TextureOpts = {
   lodMax: 1000,
   // lodBias: 0.0,
   wrap: [
-    TextureWrap.UseEdgePixel,
-    TextureWrap.UseEdgePixel,
+    TextureWrap.Repeat,
+    TextureWrap.Repeat,
     TextureWrap.UseEdgePixel,
   ],
 };

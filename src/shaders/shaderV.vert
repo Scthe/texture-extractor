@@ -16,13 +16,18 @@ out vec2 v_position;
 out vec2 v_uv;
 
 void main() {
-  // vec2 pos = getFullscreenPositionFromVertexId();
   const vec2 positions[4] = vec2[](
-        vec2(-1, -1),
-        vec2(+1, -1),
-        vec2(-1, +1),
-        vec2(+1, +1)
-    );
+    vec2(-1, -1),
+    vec2(+1, -1),
+    vec2(-1, +1),
+    vec2(+1, +1)
+  );
+  /*
+  const vec2 positions[3] = vec2[](
+    vec2(-1, -1), // vec2(-1, -1),
+    vec2(+3, -1), // vec2(+1, -1),
+    vec2(-1, +3) // vec2(-1, +1)
+  );*/
   vec2 pos = positions[gl_VertexID];
 
   gl_Position = vec4(pos, 0.0f, 1.0f);

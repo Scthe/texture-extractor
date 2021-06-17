@@ -69,3 +69,6 @@ declare module '*.frag' {
   export default ref;
 }
 type vec3 = [number, number, number];
+
+interface Point2d { x: number; y: number; };
+type Rect = [Point2d, Point2d, Point2d, Point2d];

@@ -11,6 +11,7 @@ import testImageUrl from "./test-image.jpg";
 export interface GlContext {
   gl: Webgl;
   shader: Shader;
+  imageTexture: Texture;
 }
 
 const applyDrawPrams = (gl: Webgl) => {
@@ -63,7 +64,7 @@ const loadTexture = (
   });
 }
 
-export const initializeGlView = (canvas: HTMLCanvasElement): GlContext => {
+export const initializeGlView = async (canvas: HTMLCanvasElement): Promise<GlContext> => {
   const gl = createWebGl2Context(
     canvas,
     {
@@ -78,23 +79,18 @@ export const initializeGlView = (canvas: HTMLCanvasElement): GlContext => {
   );
 
   applyDrawPrams(gl);
-  // gl.viewport(0, 0, 200, 500);
+  // gl.viewport(0, 0, canvas.width, canvas.height);
 
   // console.log("VERT:", shaderVert);
   // console.log("FRAG:", shaderFrag);
   const shader = new Shader(gl, shaderVert, shaderFrag);
   shader.use(gl);
 
-  const ctx: GlContext = { gl, shader };
-
-  loadTexture(
+  const imageTexture = await loadTexture(
     gl, testImageUrl, 800, 1137, gl.RGB8UI
-  ).then(texture => {
-    console.log(texture);
-    redraw(ctx, texture);
-  });
+  )
 
-  return ctx;
+  return { gl, shader, imageTexture };
 };
 
 // const sintelTex = createModelTexture(gl, tbs, Vec2(800, 1137), gl.RGB8UI);
@@ -108,10 +104,26 @@ const renderFullscreenQuad = ({ gl }: GlContext): void => {
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, triCnt * 3);
 };
 
-export const redraw = (ctx: GlContext, texture: Texture): void => {
-  const { gl, shader } = ctx;
-  gl.uniform4fv(shader.getUniform("u_uv_X").location, [0, 1, 0, 1]);
-  gl.uniform4fv(shader.getUniform("u_uv_Y").location, [0, 0, 1, 1]);
+export const redraw = (ctx: GlContext, rect: Rect): void => {
+  const { gl, shader, imageTexture } = ctx;
+
+  const points: Point2d[] = rect.map(p => ({
+    x: p.x / imageTexture.width,
+    y: p.y / imageTexture.height,
+  }));
+  const xs = points.map(p => p.x);
+  const ys = points.map(p => p.y);
+  console.log("xs", JSON.stringify(xs));
+  console.log("ys", JSON.stringify(ys));
+
+
+  // TODO there are only 3 vertices!
+  // gl.uniform4fv(shader.getUniform("u_uv_X").location, [0, 1, 0, 1]);
+  // gl.uniform4fv(shader.getUniform("u_uv_Y").location, [0, 0, 1, 1]);
+  // gl.uniform4fv(shader.getUniform("u_uv_X").location, [0, 2, 0, 1]);
+  // gl.uniform4fv(shader.getUniform("u_uv_Y").location, [0, 0, 2, 1]);
+  gl.uniform4fv(shader.getUniform("u_uv_X").location, xs);
+  gl.uniform4fv(shader.getUniform("u_uv_Y").location, ys);
 
   renderFullscreenQuad(ctx);
 };
