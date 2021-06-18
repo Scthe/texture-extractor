@@ -4,6 +4,11 @@ export function assertUnreachable(_x?: never): never {
   throw new Error("Didn't expect to get here");
 }
 
+export function cancelEvent(e: Event) {
+  e.stopPropagation();
+  return false;
+}
+
 export const add2d = (a: Point2d, b: Point2d): Point2d => ({
   x: a.x + b.x,
   y: a.y + b.y,
@@ -28,3 +33,12 @@ export const between2d = (a: Point2d, b: Point2d, fac: number): Point2d => ({
   x: a.x + (b.x - a.x) * fac,
   y: a.y + (b.y - a.y) * fac,
 });
+
+// https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d#path_commands
+export const coord = (p: Point2d) => `${p.x}, ${p.y}`;
+
+export const svgLinePath = (a: Point2d, b: Point2d): string =>
+  `M ${coord(a)} L ${coord(b)}`;
+
+export const svgPolygonPoints = (...points: Point2d[]): string =>
+  points.map(coord).join(" ");

@@ -101,7 +101,7 @@ const renderFullscreenQuad = ({ gl }: GlContext): void => {
 
   // we don't have to bind anything.
   const triCnt = 2;
-  gl.drawArrays(gl.TRIANGLE_STRIP, 0, triCnt * 3);
+  gl.drawArrays(gl.TRIANGLES, 0, triCnt * 3);
 };
 
 export const redraw = (ctx: GlContext, rect: Rect): void => {
@@ -117,6 +117,7 @@ export const redraw = (ctx: GlContext, rect: Rect): void => {
   console.log("ys", JSON.stringify(ys));
 
 
+  // TODO last point uv.x is invalid? Maybe cause trianglefan?
   // TODO there are only 3 vertices!
   // gl.uniform4fv(shader.getUniform("u_uv_X").location, [0, 1, 0, 1]);
   // gl.uniform4fv(shader.getUniform("u_uv_Y").location, [0, 0, 1, 1]);

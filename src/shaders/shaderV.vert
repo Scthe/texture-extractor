@@ -9,6 +9,12 @@ vec2 getFullscreenPositionFromVertexId () {
   return pos;
 }
 
+int getVertIdx() {
+  if (gl_VertexID == 3) { return 1; }
+  if (gl_VertexID == 4) { return 3; }
+  if (gl_VertexID == 5) { return 2; }
+  return gl_VertexID;
+}
 
 uniform vec4 u_uv_X;
 uniform vec4 u_uv_Y;
@@ -18,19 +24,14 @@ out vec2 v_uv;
 void main() {
   const vec2 positions[4] = vec2[](
     vec2(-1, -1),
-    vec2(+1, -1),
-    vec2(-1, +1),
-    vec2(+1, +1)
+    vec2( 1, -1),
+    vec2(-1,  1),
+    vec2( 1,  1)
   );
-  /*
-  const vec2 positions[3] = vec2[](
-    vec2(-1, -1), // vec2(-1, -1),
-    vec2(+3, -1), // vec2(+1, -1),
-    vec2(-1, +3) // vec2(-1, +1)
-  );*/
-  vec2 pos = positions[gl_VertexID];
+  int idx = getVertIdx();
+  vec2 pos = positions[idx];
 
   gl_Position = vec4(pos, 0.0f, 1.0f);
   v_position = pos;
-  v_uv = vec2(u_uv_X[gl_VertexID], u_uv_Y[gl_VertexID]);
+  v_uv = vec2(u_uv_X[idx], u_uv_Y[idx]);
 }

@@ -75,15 +75,15 @@ function App() {
     }
   }, []);
 
-  const scaleRef = useRef(1.0);
-  const onPinchZoomLeftChange = (e: any) => {
+  const [scale, setScale] = useState(1.0);
+  const onPinchZoomChange = useCallback((e: any) => {
     try {
       const scale = e.target.style.getPropertyValue("--scale");
-      scaleRef.current = scale;
+      setScale(scale);
     } catch (e) {
-      scaleRef.current = 1.0;
+      setScale(1.0);
     }
-  };
+  }, []);
 
   return (
     <div class={containterStyle}>
@@ -94,7 +94,7 @@ function App() {
       <div class={cx(columnStyle)}>
         <pinch-zoom
           class={orgImagePinchZoomStyle}
-          onChange={onPinchZoomLeftChange}
+          onChange={onPinchZoomChange}
         // ref={linkRef(this, 'pinchZoomLeft')}
         >
           <div>
@@ -104,7 +104,7 @@ function App() {
                 rect={points}
                 updateRect={setPoints}
                 onPreviewUpdate={onPreviewUpdate}
-                scaleRef={scaleRef}
+                scale={scale}
               />
             </svg>
           </div>
