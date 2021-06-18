@@ -1,4 +1,5 @@
 import { h, FunctionComponent as FC } from "preact";
+import { useRef } from "preact/hooks";
 import { css } from "@emotion/css";
 
 import { add2d, between2d, midpoint2d, sub2d, svgPolygonPoints } from "../utils";
@@ -6,20 +7,27 @@ import { useDrag } from "../hooks/useDrag";
 
 const arrowStyle = css`
   stroke-width: 1;
-  pointer-events: none;
+  cursor: pointer;
   fill: #13618561;
   stroke: #136185;
+  transition: fill 0.5s;
+  &:hover {
+    fill: #136185;
+  }
 `;
 
 interface Props {
   rect: Rect;
+  onDrag: (dt: Point2d) => void;
+  onDragEnd: (dt: Point2d) => void;
 }
 
-export const RectArrowSvg: FC<Props> = ({ rect }) => {
-  // useDrag(svgElRef.current as any, {
-  // onDrag: e => onDrag(idx, e.delta),
-  // onDragEnd: e => onDragEnd(idx, e.delta),
-  // });
+export const RectArrowSvg: FC<Props> = ({ rect, onDrag, onDragEnd }) => {
+  const svgElRef = useRef<SVGPolygonElement>();
+  useDrag(svgElRef.current as any, {
+    onDrag: e => onDrag(e.delta),
+    onDragEnd: e => onDragEnd(e.delta),
+  });
 
   const midTop = midpoint2d(rect[2], rect[3]);
   const midBottom = midpoint2d(rect[0], rect[1]);
@@ -32,6 +40,7 @@ export const RectArrowSvg: FC<Props> = ({ rect }) => {
 
   return (
     <polygon
+      ref={svgElRef}
       points={svgPolygonPoints(
         between2d(midLeft, midRight, 0.5 - arrowWidth), // left
         between2d(midTop, midBottom, 0.5 - arrowHeight / 2), // top

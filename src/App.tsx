@@ -27,8 +27,10 @@ const canvasStyle = css`
   width: 100%;
   height: 100%;
 `;
-const orgImagePinchZoomStyle = css`
+const pinchZoomStyle = css`
   position: relative;
+  width: 100%;
+  height: 100%;
 `;
 const svgStyle = css`
   width: 100%;
@@ -88,12 +90,14 @@ function App() {
   return (
     <div class={containterStyle}>
       <div class={cx(columnStyle)}>
-        <canvas ref={canvasRef} class={canvasStyle} />
+        <pinch-zoom class={pinchZoomStyle}>
+          <canvas ref={canvasRef} class={canvasStyle} />
+        </pinch-zoom>
       </div>
 
       <div class={cx(columnStyle)}>
         <pinch-zoom
-          class={orgImagePinchZoomStyle}
+          class={pinchZoomStyle}
           onChange={onPinchZoomChange}
         // ref={linkRef(this, 'pinchZoomLeft')}
         >

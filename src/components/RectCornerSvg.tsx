@@ -9,12 +9,12 @@ const RADIUS = 20;
 
 
 // TODO different colors - put inside class to manipulate
-const arrowStyle = css`
+const cornerStyle = css`
   cursor: pointer;
   transition: fill 0.5s;
   stroke-width: 0;
   &:hover {
-    fill: #287445;
+    fill: #287445; // TODO or https://developer.mozilla.org/en-US/docs/Web/SVG/Element/linearGradient ?
     stroke: #57b87c;
   }
 `;
@@ -47,7 +47,7 @@ export const RectCornerSvg: FC<Props> = ({
       ry={radius}
       fill="#57b87c"
       ref={svgElRef}
-      class={arrowStyle}
+      class={cornerStyle}
       style={`stroke-width: ${radius / 4}`}
     />
   );

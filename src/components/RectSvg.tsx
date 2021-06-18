@@ -9,10 +9,14 @@ import { RectCornerSvg } from "./RectCornerSvg";
 import { RectGridSvg } from "./RectGridSvg";
 import { RectArrowSvg } from "./RectArrowSvg";
 
-const applyMove = (rect: Rect, pointIdx: number, dt: Point2d, scale: number): Rect => {
+const applyCornerMove = (rect: Rect, pointIdx: number, dt: Point2d, scale: number): Rect => {
   const newState = clonedeep<typeof rect>(rect);
   newState[pointIdx] = add2d(rect[pointIdx], mul2d(dt, 1.0 / scale));
   return newState;
+}
+
+const applyMove = (rect: Rect, dt: Point2d, scale: number): Rect => {
+  return rect.map(p => add2d(p, mul2d(dt, 1.0 / scale))) as Rect;
 }
 
 const rectSvgStyle = css`
@@ -30,9 +34,9 @@ interface Props {
 }
 
 
-// TODO do not cover the corner
-// TODO move all corners on arrow drag
-// TODO scroll uv
+// TODO do not cover the corner - add padding
+// TODO multiple rects
+// TODO throttle
 
 export const RectSvg: FC<Props> = ({ rect, updateRect, onPreviewUpdate, scale }) => {
   const [shownRect, setShownState] = useState<Rect>(clonedeep(rect));
@@ -41,17 +45,28 @@ export const RectSvg: FC<Props> = ({ rect, updateRect, onPreviewUpdate, scale })
   }, [rect]);
 
   const rectRef = useLatest(rect);
-
   const scaleRef = useLatest(scale);
+
   const onCornerDrag = useCallback((pointIdx: number, dt: Point2d) => {
-    const newRect = applyMove(rectRef.current, pointIdx, dt, scaleRef.current);
+    const newRect = applyCornerMove(rectRef.current, pointIdx, dt, scaleRef.current);
     setShownState(newRect);
     onPreviewUpdate(newRect);
   }, []);
 
   const onCornerDragEnd = useCallback((pointIdx: number, dt: Point2d) => {
     // TODO ensurePositionIsOk();
-    const newState = applyMove(rectRef.current, pointIdx, dt, scaleRef.current);
+    const newState = applyCornerMove(rectRef.current, pointIdx, dt, scaleRef.current);
+    updateRect(newState);
+  }, []);
+
+  const onArrowDrag = useCallback((dt: Point2d) => {
+    const newRect = applyMove(rectRef.current, dt, scaleRef.current);
+    setShownState(newRect);
+    onPreviewUpdate(newRect);
+  }, []);
+
+  const onArrowDragEnd = useCallback((dt: Point2d) => {
+    const newState = applyMove(rectRef.current, dt, scaleRef.current);
     updateRect(newState);
   }, []);
 
@@ -68,10 +83,17 @@ export const RectSvg: FC<Props> = ({ rect, updateRect, onPreviewUpdate, scale })
         stroke="#a557b8"
         class={rectSvgStyle}
       />
+
       {/* mid lines */}
       <RectGridSvg rect={shownRect} />
+
       {/* arrow */}
-      <RectArrowSvg rect={shownRect} />
+      <RectArrowSvg
+        rect={shownRect}
+        onDrag={onArrowDrag}
+        onDragEnd={onArrowDragEnd}
+      />
+
       {/* corners */}
       {
         shownRect.map((pp, idx) =>

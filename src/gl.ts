@@ -116,9 +116,9 @@ export const redraw = (ctx: GlContext, rect: Rect): void => {
   console.log("xs", JSON.stringify(xs));
   console.log("ys", JSON.stringify(ys));
 
-
   // TODO last point uv.x is invalid? Maybe cause trianglefan?
   // TODO there are only 3 vertices!
+  // TODO just split this into grid 10x10 mini-planes...
   // gl.uniform4fv(shader.getUniform("u_uv_X").location, [0, 1, 0, 1]);
   // gl.uniform4fv(shader.getUniform("u_uv_Y").location, [0, 0, 1, 1]);
   // gl.uniform4fv(shader.getUniform("u_uv_X").location, [0, 2, 0, 1]);

@@ -38,6 +38,11 @@ export const RectGridSvg: FC<Props> = ({ rect }) => {
         class={midlineStyle}
       />
       <path
+        d={svgLinePath(rect[1], rect[2])}
+        stroke="red"
+        strokeWidth={3}
+      />
+      <path
         d={[
           svgLinePath(
             midpoint2d(midLeft, rect[2]),
