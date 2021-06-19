@@ -7,6 +7,15 @@ import testImageUrl from "./test-image.jpg";
 import { GlContext, initializeGlView, redraw } from "./gl";
 import { RectSvg } from "./components/RectSvg";
 import { useLatest } from "./hooks/useLatest";
+import { sub2d } from "./utils";
+
+const BORDER_SAFE_SPACE = 20;
+
+export interface AppImageData {
+  width: number;
+  height: number;
+  borderSafeSpace: number;
+}
 
 const containterStyle = css`
   display: flex;
@@ -45,28 +54,36 @@ const svgStyle = css`
 
 function App() {
   // TODO into separate hook
-  const ww = 800, hh = 1137;
+  const imageData = {
+    width: 800, height: 1137, borderSafeSpace: BORDER_SAFE_SPACE,
+  }
   const [points, setPoints] = useState<Rect>([
-    { x: 0, y: hh },
-    { x: ww, y: hh },
-    { x: 0, y: 0 },
-    { x: ww, y: 0 },
+    { x: BORDER_SAFE_SPACE, y: imageData.height / 2 },
+    { x: imageData.width / 3, y: imageData.height / 2 },
+    { x: BORDER_SAFE_SPACE, y: BORDER_SAFE_SPACE },
+    { x: imageData.width / 3, y: BORDER_SAFE_SPACE },
   ]);
   const pointsRef = useLatest(points);
+  const redrawUVview = useLatest((rect: Rect) => {
+    if (glContextRef.current != null) {
+      const rectNoPadding = rect.map(
+        p => sub2d(p, { x: BORDER_SAFE_SPACE, y: BORDER_SAFE_SPACE })
+      ) as Rect;
+      redraw(glContextRef.current, rectNoPadding);
+    }
+  });
 
   const canvasRef = useRef<HTMLCanvasElement>();
   const glContextRef = useRef<GlContext | null>();
   useEffect(() => {
     initializeGlView(canvasRef.current).then(ctx => {
       glContextRef.current = ctx;
-      redraw(glContextRef.current, pointsRef.current);
+      redrawUVview.current(pointsRef.current);
     })
   }, []);
 
   const onPreviewUpdate = useCallback((newState: Rect) => {
-    if (glContextRef.current != null) {
-      redraw(glContextRef.current, newState);
-    }
+    redrawUVview.current(newState);
   }, []);
 
   const [scale, setScale] = useState(1.0);
@@ -78,10 +95,6 @@ function App() {
       setScale(1.0);
     }
   }, []);
-
-  const imageData = {
-    width: ww, height: hh, padding: 0,
-  }
 
   return (
     <div class={containterStyle}>
@@ -97,14 +110,23 @@ function App() {
           onChange={onPinchZoomChange}
         // ref={linkRef(this, 'pinchZoomLeft')}
         >
-          <div>
-            <img src={testImageUrl} alt="test" class={rightImageStyle} style={`padding: ${imageData.padding}px`} />
+          <div style={[
+            `width: ${imageData.width + 2 * imageData.borderSafeSpace}px;`,
+            `height: ${imageData.height + 2 * imageData.borderSafeSpace}px;`
+          ].join(" ")}>
+            <img
+              src={testImageUrl}
+              alt="test"
+              class={rightImageStyle}
+              style={`padding: ${imageData.borderSafeSpace}px;`}
+            />
             <svg class={svgStyle}>
               <RectSvg
                 rect={points}
                 updateRect={setPoints}
                 onPreviewUpdate={onPreviewUpdate}
                 scale={scale}
+                imageData={imageData}
               />
             </svg>
           </div>
@@ -113,29 +135,6 @@ function App() {
     </div>
   );
 }
-
-/*
-        <TransformWrapper>
-          <TransformComponent>
-            <img src={testImageUrl} alt="test" />
-            <div>Example text</div>
-          </TransformComponent>
-        </TransformWrapper>
-        */
-
-{/*
-          <canvas
-            class={style.pinchTarget}
-            ref={linkRef(this, 'canvasLeft')}
-            width={leftDraw && leftDraw.width}
-            height={leftDraw && leftDraw.height}
-            style={{
-              width: originalImage ? originalImage.width : '',
-              height: originalImage ? originalImage.height : '',
-              objectFit: leftImgContain ? 'contain' : '',
-            }}
-          />
-          */}
 
 export default App;
 

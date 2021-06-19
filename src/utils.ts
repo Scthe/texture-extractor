@@ -9,6 +9,9 @@ export function cancelEvent(e: Event) {
   return false;
 }
 
+export const clamp = (x: number, minVal: number, maxVal: number) =>
+  Math.min(maxVal, Math.max(minVal, x));
+
 export const add2d = (a: Point2d, b: Point2d): Point2d => ({
   x: a.x + b.x,
   y: a.y + b.y,

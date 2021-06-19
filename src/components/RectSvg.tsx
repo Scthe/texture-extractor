@@ -4,23 +4,42 @@ import { css } from "@emotion/css";
 import clonedeep from "lodash.clonedeep";
 
 import { useLatest } from "../hooks/useLatest";
-import { add2d, mul2d, svgPolygonPoints } from "../utils";
+import { add2d, clamp, mul2d, svgPolygonPoints } from "../utils";
 import { RectCornerSvg } from "./RectCornerSvg";
 import { RectGridSvg } from "./RectGridSvg";
 import { RectArrowSvg } from "./RectArrowSvg";
+import type { AppImageData } from "src/App";
 
-const applyCornerMove = (rect: Rect, pointIdx: number, dt: Point2d, scale: number): Rect => {
-  const newState = clonedeep<typeof rect>(rect);
-  newState[pointIdx] = add2d(rect[pointIdx], mul2d(dt, 1.0 / scale));
+interface ImageState {
+  rect: Rect;
+  scale: number;
+  imageData: AppImageData;
+}
+
+const addDeltaToPoint = (
+  point: Point2d, delta: Point2d, { scale, imageData }: ImageState
+): Point2d => {
+  const p = add2d(point, mul2d(delta, 1.0 / scale));
+  p.x = clamp(p.x, imageData.borderSafeSpace, imageData.borderSafeSpace + imageData.width);
+  p.y = clamp(p.y, imageData.borderSafeSpace, imageData.borderSafeSpace + imageData.height);
+  return p;
+};
+
+const applyCornerMove = (
+  imageState: ImageState, pointIdx: number, dt: Point2d
+): Rect => {
+  const newState = clonedeep<Rect>(imageState.rect);
+  newState[pointIdx] = addDeltaToPoint(imageState.rect[pointIdx], dt, imageState);
   return newState;
 }
 
-const applyMove = (rect: Rect, dt: Point2d, scale: number): Rect => {
-  return rect.map(p => add2d(p, mul2d(dt, 1.0 / scale))) as Rect;
+const applyMove = (
+  imageState: ImageState, dt: Point2d
+): Rect => {
+  return imageState.rect.map(p => addDeltaToPoint(p, dt, imageState)) as Rect;
 }
 
 const rectSvgStyle = css`
-  stroke-width: 5;
   fill: none;
   pointer-events: none;
   stroke-dasharray: 10;
@@ -28,47 +47,54 @@ const rectSvgStyle = css`
 
 interface Props {
   rect: Rect;
+  scale: number;
+  imageData: AppImageData;
   updateRect: (rect: Rect) => void;
   onPreviewUpdate: (rect: Rect) => void;
-  scale: number;
 }
 
 
-// TODO do not cover the corner - add padding
 // TODO multiple rects
 // TODO throttle
 
-export const RectSvg: FC<Props> = ({ rect, updateRect, onPreviewUpdate, scale }) => {
+export const RectSvg: FC<Props> = ({
+  rect, scale, imageData,
+  updateRect, onPreviewUpdate
+}) => {
   const [shownRect, setShownState] = useState<Rect>(clonedeep(rect));
   useEffect(() => {
     setShownState(clonedeep(rect));
   }, [rect]);
 
-  const rectRef = useLatest(rect);
-  const scaleRef = useLatest(scale);
+  const imageStateRef = useLatest<ImageState>({
+    imageData, rect, scale
+  });
 
   const onCornerDrag = useCallback((pointIdx: number, dt: Point2d) => {
-    const newRect = applyCornerMove(rectRef.current, pointIdx, dt, scaleRef.current);
+    const newRect = applyCornerMove(imageStateRef.current, pointIdx, dt);
     setShownState(newRect);
     onPreviewUpdate(newRect);
   }, []);
 
   const onCornerDragEnd = useCallback((pointIdx: number, dt: Point2d) => {
-    // TODO ensurePositionIsOk();
-    const newState = applyCornerMove(rectRef.current, pointIdx, dt, scaleRef.current);
+    const newState = applyCornerMove(imageStateRef.current, pointIdx, dt);
     updateRect(newState);
   }, []);
 
   const onArrowDrag = useCallback((dt: Point2d) => {
-    const newRect = applyMove(rectRef.current, dt, scaleRef.current);
+    const newRect = applyMove(imageStateRef.current, dt);
     setShownState(newRect);
     onPreviewUpdate(newRect);
   }, []);
 
   const onArrowDragEnd = useCallback((dt: Point2d) => {
-    const newState = applyMove(rectRef.current, dt, scaleRef.current);
+    const newState = applyMove(imageStateRef.current, dt);
     updateRect(newState);
   }, []);
+
+  const scaleIndependent = useCallback(
+    (v: number) => v / imageStateRef.current.scale,
+    []);
 
   return (
     <Fragment>
@@ -82,16 +108,21 @@ export const RectSvg: FC<Props> = ({ rect, updateRect, onPreviewUpdate, scale })
         )}
         stroke="#a557b8"
         class={rectSvgStyle}
+        style={`stroke-width: ${Math.min(scaleIndependent(5), 7)};`}
       />
 
       {/* mid lines */}
-      <RectGridSvg rect={shownRect} />
+      <RectGridSvg
+        rect={shownRect}
+        scaleIndependent={scaleIndependent}
+      />
 
       {/* arrow */}
       <RectArrowSvg
         rect={shownRect}
         onDrag={onArrowDrag}
         onDragEnd={onArrowDragEnd}
+        scaleIndependent={scaleIndependent}
       />
 
       {/* corners */}
@@ -101,9 +132,10 @@ export const RectSvg: FC<Props> = ({ rect, updateRect, onPreviewUpdate, scale })
             key={idx}
             idx={idx}
             point={pp}
-            scale={scale}
+            scaleIndependent={scaleIndependent}
             onDrag={onCornerDrag}
             onDragEnd={onCornerDragEnd}
+            maxRadius={imageData.borderSafeSpace}
           />
         )
       }

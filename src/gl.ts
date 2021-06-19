@@ -7,6 +7,7 @@ import shaderFrag from "./shaders/shaderF.frag";
 import { Texture, TextureType } from "./gl-utils/texture/Texture";
 import { createTextureOpts, TextureFilterMag, TextureFilterMin } from "./gl-utils/texture/TextureOpts";
 import testImageUrl from "./test-image.jpg";
+import { clamp } from "./utils";
 
 export interface GlContext {
   gl: Webgl;
@@ -81,8 +82,6 @@ export const initializeGlView = async (canvas: HTMLCanvasElement): Promise<GlCon
   applyDrawPrams(gl);
   // gl.viewport(0, 0, canvas.width, canvas.height);
 
-  // console.log("VERT:", shaderVert);
-  // console.log("FRAG:", shaderFrag);
   const shader = new Shader(gl, shaderVert, shaderFrag);
   shader.use(gl);
 
@@ -93,16 +92,10 @@ export const initializeGlView = async (canvas: HTMLCanvasElement): Promise<GlCon
   return { gl, shader, imageTexture };
 };
 
-// const sintelTex = createModelTexture(gl, tbs, Vec2(800, 1137), gl.RGB8UI);
-// await loadTexture(gl, tbs, TEXTURE_FILES.sintel, sintelTex);
-
 const renderFullscreenQuad = ({ gl }: GlContext): void => {
-  // TODO dp.depth.test = DepthTest.AlwaysPass;
-
   // we don't have to bind anything.
   const miniPlanes = 5;
   const triCnt = 2 * miniPlanes * miniPlanes;
-  // const triCnt = 2 * 2;
   gl.drawArrays(gl.TRIANGLES, 0, triCnt * 3);
 };
 
@@ -110,21 +103,11 @@ export const redraw = (ctx: GlContext, rect: Rect): void => {
   const { gl, shader, imageTexture } = ctx;
 
   const points: Point2d[] = rect.map(p => ({
-    x: p.x / imageTexture.width,
-    y: p.y / imageTexture.height,
+    x: clamp(p.x / imageTexture.width, 0.0, 1.0),
+    y: clamp(p.y / imageTexture.height, 0.0, 1.0),
   }));
   const xs = points.map(p => p.x);
   const ys = points.map(p => p.y);
-  // console.log("xs", JSON.stringify(xs));
-  // console.log("ys", JSON.stringify(ys));
-
-  // TODO last point uv.x is invalid? Maybe cause trianglefan?
-  // TODO there are only 3 vertices!
-  // TODO just split this into grid 10x10 mini-planes... Debug draw each with different color (each mini-plane has id). Then 2nd debug draw with GL_LINE. In prod leave window.debugRipper to control this
-  // gl.uniform4fv(shader.getUniform("u_uv_X").location, [0, 1, 0, 1]);
-  // gl.uniform4fv(shader.getUniform("u_uv_Y").location, [0, 0, 1, 1]);
-  // gl.uniform4fv(shader.getUniform("u_uv_X").location, [0, 2, 0, 1]);
-  // gl.uniform4fv(shader.getUniform("u_uv_Y").location, [0, 0, 2, 1]);
   gl.uniform4fv(shader.getUniform("u_uv_X").location, xs);
   gl.uniform4fv(shader.getUniform("u_uv_Y").location, ys);
 

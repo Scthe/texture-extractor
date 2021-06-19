@@ -5,29 +5,32 @@ import { css } from "@emotion/css";
 import { add2d, between2d, midpoint2d, sub2d, svgPolygonPoints } from "../utils";
 import { useDrag } from "../hooks/useDrag";
 
-const arrowStyle = css`
-  stroke-width: 1;
-  cursor: pointer;
-  fill: #13618561;
-  stroke: #136185;
-  transition: fill 0.5s;
-  &:hover {
-    fill: #136185;
-  }
-`;
-
 interface Props {
   rect: Rect;
+  scaleIndependent: (v: number) => number;
   onDrag: (dt: Point2d) => void;
   onDragEnd: (dt: Point2d) => void;
 }
 
-export const RectArrowSvg: FC<Props> = ({ rect, onDrag, onDragEnd }) => {
+export const RectArrowSvg: FC<Props> = ({
+  rect, scaleIndependent, onDrag, onDragEnd
+}) => {
   const svgElRef = useRef<SVGPolygonElement>();
   useDrag(svgElRef.current as any, {
     onDrag: e => onDrag(e.delta),
     onDragEnd: e => onDragEnd(e.delta),
   });
+
+  const arrowStyle = css`
+  cursor: pointer;
+  fill: #13618561;
+  stroke: #136185;
+  transition: fill 0.5s;
+  stroke-width: ${scaleIndependent(1)};
+  &:hover {
+    fill: #136185;
+  }
+`;
 
   const midTop = midpoint2d(rect[2], rect[3]);
   const midBottom = midpoint2d(rect[0], rect[1]);

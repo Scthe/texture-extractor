@@ -3,30 +3,33 @@ import { css } from "@emotion/css";
 
 import { midpoint2d, svgLinePath } from "../utils";
 
-const midlineStyle = css`
-  stroke-width: 2;
-  fill: none;
-  pointer-events: none;
-  stroke: #646464;
-  stroke-dasharray: 5;
-`;
-const quaterStyle = css`
-  stroke-width: 1;
-  fill: none;
-  pointer-events: none;
-  stroke: #646464ea;
-  stroke-dasharray: 5;
-`;
+
 
 interface Props {
   rect: Rect;
+  scaleIndependent: (v: number) => number;
 }
 
-export const RectGridSvg: FC<Props> = ({ rect }) => {
+export const RectGridSvg: FC<Props> = ({ rect, scaleIndependent }) => {
   const midTop = midpoint2d(rect[2], rect[3]);
   const midBottom = midpoint2d(rect[0], rect[1]);
   const midLeft = midpoint2d(rect[0], rect[2]);
   const midRight = midpoint2d(rect[1], rect[3]);
+
+  const midlineStyle = css`
+  fill: none;
+  pointer-events: none;
+  stroke: #646464;
+  stroke-dasharray: ${scaleIndependent(15)};
+  stroke-width: ${scaleIndependent(1.5)};
+`;
+  const quaterStyle = css`
+  fill: none;
+  pointer-events: none;
+  stroke: #646464ea;
+  stroke-dasharray: ${scaleIndependent(5)};
+  stroke-width: ${scaleIndependent(1)};
+`;
 
   return (
     <Fragment>
@@ -36,11 +39,6 @@ export const RectGridSvg: FC<Props> = ({ rect }) => {
           svgLinePath(midLeft, midRight),
         ].join(" ")}
         class={midlineStyle}
-      />
-      <path
-        d={svgLinePath(rect[1], rect[2])}
-        stroke="red"
-        strokeWidth={3}
       />
       <path
         d={[

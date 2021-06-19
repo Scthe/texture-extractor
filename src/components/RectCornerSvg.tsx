@@ -22,13 +22,15 @@ const cornerStyle = css`
 interface Props {
   idx: number;
   point: Point2d;
-  scale: number;
+  maxRadius: number;
+  scaleIndependent: (v: number) => number;
   onDrag: (pointIdx: number, dt: Point2d) => void;
   onDragEnd: (pointIdx: number, dt: Point2d) => void;
 }
 
 export const RectCornerSvg: FC<Props> = ({
-  idx, point, scale, onDrag, onDragEnd
+  idx, point, scaleIndependent, maxRadius,
+  onDrag, onDragEnd
 }) => {
   const svgElRef = useRef<SVGEllipseElement>();
 
@@ -37,7 +39,7 @@ export const RectCornerSvg: FC<Props> = ({
     onDragEnd: e => onDragEnd(idx, e.delta),
   });
 
-  const radius = RADIUS / scale;
+  const radius = Math.min(scaleIndependent(RADIUS), maxRadius - 2);
 
   return (
     <ellipse
@@ -48,7 +50,7 @@ export const RectCornerSvg: FC<Props> = ({
       fill="#57b87c"
       ref={svgElRef}
       class={cornerStyle}
-      style={`stroke-width: ${radius / 4}`}
+      style={`stroke-width: ${radius / 6}`}
     />
   );
 };
