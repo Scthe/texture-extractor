@@ -100,7 +100,9 @@ const renderFullscreenQuad = ({ gl }: GlContext): void => {
   // TODO dp.depth.test = DepthTest.AlwaysPass;
 
   // we don't have to bind anything.
-  const triCnt = 2;
+  const miniPlanes = 5;
+  const triCnt = 2 * miniPlanes * miniPlanes;
+  // const triCnt = 2 * 2;
   gl.drawArrays(gl.TRIANGLES, 0, triCnt * 3);
 };
 
@@ -113,12 +115,12 @@ export const redraw = (ctx: GlContext, rect: Rect): void => {
   }));
   const xs = points.map(p => p.x);
   const ys = points.map(p => p.y);
-  console.log("xs", JSON.stringify(xs));
-  console.log("ys", JSON.stringify(ys));
+  // console.log("xs", JSON.stringify(xs));
+  // console.log("ys", JSON.stringify(ys));
 
   // TODO last point uv.x is invalid? Maybe cause trianglefan?
   // TODO there are only 3 vertices!
-  // TODO just split this into grid 10x10 mini-planes...
+  // TODO just split this into grid 10x10 mini-planes... Debug draw each with different color (each mini-plane has id). Then 2nd debug draw with GL_LINE. In prod leave window.debugRipper to control this
   // gl.uniform4fv(shader.getUniform("u_uv_X").location, [0, 1, 0, 1]);
   // gl.uniform4fv(shader.getUniform("u_uv_Y").location, [0, 0, 1, 1]);
   // gl.uniform4fv(shader.getUniform("u_uv_X").location, [0, 2, 0, 1]);

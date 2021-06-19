@@ -47,14 +47,6 @@ function App() {
   // TODO into separate hook
   const ww = 800, hh = 1137;
   const [points, setPoints] = useState<Rect>([
-    // { x: 0.0, y: 0.0 },
-    // { x: 150.0, y: 20.0 },
-    // { x: 120.0, y: 200.0 },
-    // { x: 10.0, y: 180.0 },
-    // { x: 0, y: 0 },
-    // { x: ww, y: 0 },
-    // { x: 0, y: hh },
-    // { x: ww, y: hh },
     { x: 0, y: hh },
     { x: ww, y: hh },
     { x: 0, y: 0 },
@@ -87,6 +79,10 @@ function App() {
     }
   }, []);
 
+  const imageData = {
+    width: ww, height: hh, padding: 0,
+  }
+
   return (
     <div class={containterStyle}>
       <div class={cx(columnStyle)}>
@@ -102,7 +98,7 @@ function App() {
         // ref={linkRef(this, 'pinchZoomLeft')}
         >
           <div>
-            <img src={testImageUrl} alt="test" class={rightImageStyle} />
+            <img src={testImageUrl} alt="test" class={rightImageStyle} style={`padding: ${imageData.padding}px`} />
             <svg class={svgStyle}>
               <RectSvg
                 rect={points}
