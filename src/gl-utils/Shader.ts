@@ -33,6 +33,7 @@ const compileShaderStage = (gl: Webgl, stage: ShaderStage, source: string) => {
     parseCompileErrorLog(source, logText).forEach((line) => {
       line = line.trim();
       if (line.length > 0) {
+        // eslint-disable-next-line no-console
         console.log(`%c${line}`, "color: #FA5858");
       }
     });
@@ -47,7 +48,7 @@ interface ActiveInfo {
   name: string;
   size: number;
   type: GLenum;
-  location: GLint;
+  location: WebGLUniformLocation;
 }
 type ActiveResourceMap = { [name: string]: ActiveInfo };
 
@@ -74,12 +75,12 @@ const introspectUniforms = (gl: Webgl, shader: Shader) => {
 
   for (let i = 0; i < uniformCount; i++) {
     const uniformInfo = gl.getActiveUniform(shader.glId, i)!;
-    const uniformQueryName = uniformInfo.name.replace('[0]', '');
+    const uniformQueryName = uniformInfo.name.replace("[0]", "");
     uniforms[uniformInfo.name] = {
       size: uniformInfo.size, // cannot use spread :(
       name: uniformInfo.name,
       type: uniformInfo.type,
-      location: gl.getUniformLocation(shader.glId, uniformQueryName) as any, // technically WebGLUniformLocation ./shrug
+      location: gl.getUniformLocation(shader.glId, uniformQueryName)!,
     };
   }
 
@@ -123,19 +124,23 @@ export class Shader {
     }
   }
 
-  use(gl: Webgl) {
+  use(gl: Webgl): void {
     gl.useProgram(this.glId);
   }
 
-  getAttr(name: string) { return this.attrs[name]; }
-  getUniform(name: string) { return this.uniforms[name]; }
+  getAttr(name: string): ActiveInfo {
+    return this.attrs[name];
+  }
+  getUniform(name: string): ActiveInfo {
+    return this.uniforms[name];
+  }
 
-  destroy(gl: Webgl) {
+  destroy(gl: Webgl): void {
     gl.deleteProgram(this.glId);
     this.glId_ = null;
   }
 
-  get glId() {
+  get glId(): WebGLProgram {
     if (this.glId_ == null) {
       throw new Error("Tried to use deleted shader");
     }

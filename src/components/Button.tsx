@@ -1,5 +1,5 @@
-import { css, cx } from "@emotion/css";
 import { h, FunctionComponent as FC } from "preact";
+import { css, cx } from "@emotion/css";
 import * as s from "../style";
 import type { AppTheme } from "../style";
 import { Icon } from "./Icon";

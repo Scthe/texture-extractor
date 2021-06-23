@@ -1,22 +1,8 @@
-import { h, FunctionComponent as FC } from "preact";
 import { css, cx } from "@emotion/css";
-
+import { h, FunctionComponent as FC } from "preact";
 import * as s from "../../style";
-import { Icon } from "../../components/Icon";
 
-import exampleArch from "../../example-images/john-towner-UO02gAW3c0c-unsplash.jpg";
 import type { ExampleImage } from "./exampleImages";
-
-const dimmer = css`
-  background-color: #00000080;
-`;
-const modal = css`
-  max-width: 600px;
-  margin: 50px auto 0;
-  padding-top: ${s.spacing(3)};
-  border-radius: ${s.borderRadius("m")};
-  background-color: ${s.COLORS.dirtyWhite};
-`;
 
 const container = css`
   display: block;

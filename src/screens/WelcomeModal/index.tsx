@@ -6,9 +6,9 @@ import "file-drop-element";
 
 import * as s from "../../style";
 import { Icon } from "../../components/Icon";
+import { decodeImage } from "../../utils/decodeImage";
 import { ImageAvatar } from "./ImageAvatar";
 import { ExampleImage, EXAMPLE_IMAGES } from "./exampleImages";
-import { decodeImage } from "../../utils/decodeImage";
 
 const dimmer = css`
   background-color: rgba(0, 0, 0, 0.5);
@@ -121,7 +121,6 @@ const getExampleAsFile = async (img: ExampleImage) => {
   // }
 };
 
-
 export const WelcomeModal: FC<Props> = ({ isOpen }) => {
   const rectShared = {
     class: purpleRect,
@@ -145,22 +144,31 @@ export const WelcomeModal: FC<Props> = ({ isOpen }) => {
     });
   }, []);
 
-  const handleDemoClick = useCallback((img: ExampleImage) => {
-    getExampleAsFile(img).then((f) => startEditorWithFile(f, true));
-  }, []);
+  const handleDemoClick = useCallback(
+    (img: ExampleImage) => {
+      getExampleAsFile(img).then((f) => startEditorWithFile(f, true));
+    },
+    [startEditorWithFile],
+  );
 
-  const handleFileChange = useCallback((event: Event): void => {
-    const fileInput = event.target as HTMLInputElement;
-    const file = fileInput.files && fileInput.files[0];
-    if (!file) return;
-    startEditorWithFile(file, false);
-  }, []);
+  const handleFileChange = useCallback(
+    (event: Event): void => {
+      const fileInput = event.target as HTMLInputElement;
+      const file = fileInput.files && fileInput.files[0];
+      if (!file) return;
+      startEditorWithFile(file, false);
+    },
+    [startEditorWithFile],
+  );
 
-  const handleFileDrop = useCallback(({ files }: FileDropEvent) => {
-    if (!files || files.length === 0) return;
-    const file = files[0];
-    startEditorWithFile(file, false);
-  }, []);
+  const handleFileDrop = useCallback(
+    ({ files }: FileDropEvent) => {
+      if (!files || files.length === 0) return;
+      const file = files[0];
+      startEditorWithFile(file, false);
+    },
+    [startEditorWithFile],
+  );
 
   if (!isOpen) {
     return null;

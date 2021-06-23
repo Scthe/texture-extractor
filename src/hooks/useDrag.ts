@@ -1,8 +1,7 @@
 import { useEffect } from "preact/hooks";
 import PointerTracker, { Pointer } from "pointer-tracker";
-
-import { useLatest } from "./useLatest";
 import { cancelEvent, sub2d } from "../utils";
+import { useLatest } from "./useLatest";
 
 const POINTER_ID = 0;
 
@@ -23,7 +22,7 @@ interface Callbacks {
   onDragEnd?: (e: DragEvent) => void;
 }
 
-export const useDrag = (element: HTMLElement, callbacks: Callbacks) => {
+export const useDrag = (element: HTMLElement, callbacks: Callbacks): void => {
   const callbacksRef = useLatest(callbacks);
 
   useEffect(() => {
@@ -63,7 +62,7 @@ export const useDrag = (element: HTMLElement, callbacks: Callbacks) => {
           callbacksRef.current.onDrag(createEvent(pointer));
         }
       },
-      end(pointer, event, cancelled) {
+      end(pointer, event, _cancelled) {
         cancelEvent(event);
         if (pointer.id !== POINTER_ID) {
           return;
@@ -81,5 +80,5 @@ export const useDrag = (element: HTMLElement, callbacks: Callbacks) => {
     return () => {
       tracker.stop();
     };
-  }, [element]);
+  }, [callbacksRef, element]);
 };

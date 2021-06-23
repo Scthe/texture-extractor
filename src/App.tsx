@@ -3,19 +3,19 @@ import { useCallback, useState } from "preact/hooks";
 import { createPortal } from "preact/compat";
 import { css } from "@emotion/css";
 import "pinch-zoom-element";
+import type { FileDropEvent } from "file-drop-element";
 
 import testImageUrl from "./test-image.jpg";
 import { UVscreen } from "./screens/UVscreen";
 import { ImageScreen } from "./screens/ImageScreen";
 import { WelcomeModal } from "./screens/WelcomeModal";
-import type { FileDropEvent } from "file-drop-element";
 
-
-declare module 'preact' {
+declare module "preact" {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace JSX {
     interface IntrinsicElements {
-      'file-drop': FileDropAttributes;
-      'pinch-zoom': preact.JSX.HTMLAttributes<HTMLElement>;
+      "file-drop": FileDropAttributes;
+      "pinch-zoom": preact.JSX.HTMLAttributes<HTMLElement>;
     }
   }
 }
@@ -32,7 +32,7 @@ const containterStyle = css`
   flex-direction: row;
 `;
 
-function App() {
+function App(): h.JSX.Element {
   // TODO into separate hook
   const imageData = {
     width: 800,

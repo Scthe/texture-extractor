@@ -26,6 +26,7 @@ export const RectArrowSvg: FC<Props> = ({
   onDragEnd,
 }) => {
   const svgElRef = useRef<SVGPolygonElement>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   useDrag(svgElRef.current as any, {
     onDrag: (e) => onDrag(e.delta),
     onDragEnd: (e) => onDragEnd(e.delta),

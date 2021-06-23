@@ -1,7 +1,6 @@
 import { h, FunctionComponent as FC } from "preact";
 import { useRef } from "preact/hooks";
 import { css } from "@emotion/css";
-
 import { useDrag } from "../hooks/useDrag";
 
 // TODO make invisible big circles as handles instead
@@ -37,6 +36,7 @@ export const RectCornerSvg: FC<Props> = ({
 }) => {
   const svgElRef = useRef<SVGEllipseElement>();
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   useDrag(svgElRef.current as any, {
     onDrag: (e) => onDrag(idx, e.delta),
     onDragEnd: (e) => onDragEnd(idx, e.delta),

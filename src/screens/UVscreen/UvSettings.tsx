@@ -1,6 +1,5 @@
-import { h, FunctionComponent as FC } from "preact";
 import { cx } from "@emotion/css";
-
+import { h, FunctionComponent as FC } from "preact";
 import { SettingsPanel } from "../../components/SettingsPanel";
 import { SettingsSection } from "../../components/SettingsSection";
 import { Button } from "../../components/Button";

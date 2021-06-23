@@ -31,12 +31,26 @@ module.exports = {
     "@typescript-eslint/no-non-null-assertion": "off",
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "error",
-    "import/order": "error",
+    "import/order": [
+      "error",
+      {
+        groups: [
+          "builtin",
+          "external",
+          "internal", // also external libs here too?
+          "parent",
+          "sibling",
+        ],
+      },
+    ],
     "import/no-duplicates": "off", // default eslint is good enough?
     "import/no-unused-modules": ["error", { unusedExports: true }],
     "@typescript-eslint/no-unused-vars": [
       "error",
-      { varsIgnorePattern: "^h$" },
+      {
+        varsIgnorePattern: "^h$|^_",
+        argsIgnorePattern: "^_",
+      },
     ],
     // we have TS for following:
     "import/namespace": "off",

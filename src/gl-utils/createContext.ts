@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import GlobalWebGl2Context from "./gimme_gl";
 
 // https://github.com/Microsoft/TypeScript/issues/14733
 
 // should be: WebGLContextCreationAttirbutes, but not defined
 // https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/getContext
-type WebGLContextOpts = object;
+type WebGLContextOpts = Record<string, any>;
 
 const GET_A_WEBGL_BROWSER =
   "" +

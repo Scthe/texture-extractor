@@ -24,6 +24,7 @@ export enum TextureSwizzle {
   One = STATIC_GL.ONE,
 };*/
 
+// eslint-disable-next-line import/no-unused-modules
 export enum TextureWrap {
   UseEdgePixel = STATIC_GL.CLAMP_TO_EDGE,
   // UseBorderColor = STATIC_GL.CLAMP_TO_BORDER,
@@ -81,7 +82,7 @@ const DEFAULT_TEXTURE_OPTS: TextureOpts = {
   ],
 };
 
-export const createTextureOpts = (base: Partial<TextureOpts>) => ({
+export const createTextureOpts = (base: Partial<TextureOpts>): TextureOpts => ({
   ...DEFAULT_TEXTURE_OPTS,
   ...base,
 });

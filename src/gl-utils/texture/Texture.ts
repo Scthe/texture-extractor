@@ -24,6 +24,7 @@ interface TextureBox {
 interface WriteSource {
   unsizedPixelFormat: number; // GL_R, GL_RG, GL_RGB, GL_RGBA etc. - channels only
   perChannelType: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
 }
 
@@ -162,7 +163,7 @@ export class Texture {
     mipmapLevel: number,
     targetPos: TextureBox,
     source: WriteSource,
-  ) {
+  ): void {
     if (this.isDepth) {
       throw `Tried to write into depth texture. What?`;
     }
@@ -209,17 +210,17 @@ export class Texture {
     }
   }
 
-  get width() {
+  get width(): number {
     return this.dimensions[0];
   }
-  get height() {
+  get height(): number {
     return this.dimensions[1];
   }
-  get depth() {
+  get depth(): number {
     return this.dimensions[2];
   } // also array size
 
-  get glId() {
+  get glId(): WebGLTexture {
     if (this.glId_ == null) {
       throw new Error(
         `Tried to use deleted texture with dimensions ${this.width}x${this.height}`,
@@ -228,7 +229,7 @@ export class Texture {
     return this.glId_;
   }
 
-  get isDepth() {
+  get isDepth(): boolean {
     const depthFormats = [
       STATIC_GL.DEPTH_COMPONENT16,
       STATIC_GL.DEPTH24_STENCIL8,
@@ -236,18 +237,18 @@ export class Texture {
     return depthFormats.includes(this.sizedPixelFormat);
   }
 
-  get isDepthStencil() {
+  get isDepthStencil(): boolean {
     const depthFormats = [STATIC_GL.DEPTH24_STENCIL8];
     return depthFormats.includes(this.sizedPixelFormat);
   }
 
-  bindAsActive(gl: Webgl) {
+  bindAsActive(gl: Webgl): void {
     const bindIdx = 0;
     gl.activeTexture(gl.TEXTURE0 + bindIdx);
     gl.bindTexture(this.type, this.glId);
   }
 
-  destroy(gl: Webgl) {
+  destroy(gl: Webgl): void {
     gl.deleteTexture(this.glId);
   }
 

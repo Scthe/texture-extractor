@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 // just give me global gl object
 // used only for consts declaration,
 // normally we use gl from canvas.
@@ -10,5 +12,3 @@ export const getGlConstName = (value: number): string => {
   const keys = Object.keys(gl).filter((k) => (gl as any)[k] === value);
   return keys.join(" ");
 };
-
-// type vec3 = [number, number, number];

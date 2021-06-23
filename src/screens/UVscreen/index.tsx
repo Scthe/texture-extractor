@@ -1,7 +1,6 @@
-import { h, FunctionComponent as FC } from "preact";
-import { useEffect, useRef } from "preact/hooks";
 import { css, cx } from "@emotion/css";
-
+import { useEffect, useRef } from "preact/hooks";
+import { h, FunctionComponent as FC } from "preact";
 import { GlContext, initializeGlView, redraw } from "../../gl";
 import { useLatest } from "../../hooks/useLatest";
 import { sub2d, hexAsSvgColor } from "../../utils";
@@ -10,9 +9,8 @@ import { ScreenName } from "../../components/ScreenName";
 import { SettingsOpenButton } from "../../components/SettingsOpenButton";
 import { usePinchScaleChange } from "../../hooks/usePinchScaleChange";
 import { useBoolState } from "../../hooks/useBoolState";
-import { UvSettings } from "./UvSettings";
-
 import * as s from "../../style";
+import { UvSettings } from "./UvSettings";
 
 const CHECKER_COLOR_1 = hexAsSvgColor(s.COLORS.greyDark);
 const CHECKER_COLOR_2 = hexAsSvgColor(s.COLORS.greyMid);
@@ -37,7 +35,7 @@ export const UVscreen: FC<Props> = ({ points, imageData }) => {
   const canvasRef = useRef<HTMLCanvasElement>();
   const glContextRef = useRef<GlContext | null>();
 
-  const redrawUVview = useLatest((rect: Rect) => {
+  const redrawUVviewRef = useLatest((rect: Rect) => {
     if (glContextRef.current != null) {
       const padding = imageDataRef.current.borderSafeSpace;
       const rectNoPadding = rect.map((p) =>
@@ -50,9 +48,9 @@ export const UVscreen: FC<Props> = ({ points, imageData }) => {
   useEffect(() => {
     initializeGlView(canvasRef.current).then((ctx) => {
       glContextRef.current = ctx;
-      redrawUVview.current(pointsRef.current);
+      redrawUVviewRef.current(pointsRef.current);
     });
-  }, []);
+  }, [pointsRef, redrawUVviewRef]);
 
   const [zoom, onPinchZoomChange] = usePinchScaleChange();
 

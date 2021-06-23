@@ -1,15 +1,13 @@
-import { h, FunctionComponent as FC } from "preact";
 import { css } from "@emotion/css";
-
+import { h, FunctionComponent as FC } from "preact";
 import { RectSvg } from "../../components/RectSvg";
 import { ZoomNumber } from "../../components/ZoomNumber";
 import { ScreenName } from "../../components/ScreenName";
 import { SettingsOpenButton } from "../../components/SettingsOpenButton";
 import { usePinchScaleChange } from "../../hooks/usePinchScaleChange";
 import { useBoolState } from "../../hooks/useBoolState";
-import { ImageSettings } from "./ImageSettings";
-
 import * as s from "../../style";
+import { ImageSettings } from "./ImageSettings";
 
 const dimedImage = css`
   opacity: 0.4;

@@ -33,6 +33,7 @@ async function blobToImg(blob: Blob): Promise<HTMLImageElement> {
 
 function getWidth(drawable: ImageBitmap | HTMLImageElement): number {
   if ("displayWidth" in drawable) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (drawable as any).displayWidth;
   }
   return drawable.width;
@@ -40,12 +41,13 @@ function getWidth(drawable: ImageBitmap | HTMLImageElement): number {
 
 function getHeight(drawable: ImageBitmap | HTMLImageElement): number {
   if ("displayHeight" in drawable) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (drawable as any).displayHeight;
   }
   return drawable.height;
 }
 
-export function drawableToImageData(
+function drawableToImageData(
   drawable: ImageBitmap | HTMLImageElement,
 ): ImageData {
   const width = getWidth(drawable);

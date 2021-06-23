@@ -1,9 +1,12 @@
 import STATIC_GL from "../gimme_gl";
 
-export const getMipmapSize = (size0: number, mipmapLvl: number) =>
+// eslint-disable-next-line import/no-unused-modules
+export const getMipmapSize = (size0: number, mipmapLvl: number): number =>
   size0 * Math.pow(0.5, mipmapLvl);
 
-export const isSizedTextureFormatInteger = (sizedPixelFormat: GLenum) => {
+export const isSizedTextureFormatInteger = (
+  sizedPixelFormat: GLenum,
+): boolean => {
   switch (sizedPixelFormat) {
     case STATIC_GL.RGBA32I:
     case STATIC_GL.RGBA32UI:
@@ -36,7 +39,16 @@ export const isSizedTextureFormatInteger = (sizedPixelFormat: GLenum) => {
   }
 };
 
-export const getDepthStencilGlTexImageParams = (gl: Webgl, type: GLenum) => {
+interface DepthStencilParams {
+  internalformat: GLenum;
+  format: GLenum;
+  type: GLenum;
+}
+
+export const getDepthStencilGlTexImageParams = (
+  gl: Webgl,
+  type: GLenum,
+): DepthStencilParams | null => {
   switch (type) {
     case gl.DEPTH_COMPONENT16:
       return {

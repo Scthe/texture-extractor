@@ -1,7 +1,6 @@
 import { h, FunctionComponent as FC } from "preact";
 import { useCallback } from "preact/hooks";
 import { css, cx } from "@emotion/css";
-
 import * as s from "../style";
 import { Icon } from "./Icon";
 
@@ -47,7 +46,7 @@ export const Checkbox: FC<Props> = ({
     if (onChecked) {
       onChecked(!checked);
     }
-  }, [checked]);
+  }, [checked, onChecked]);
 
   // TODO check if click on label causes change. cursors?
   return (

@@ -1,14 +1,13 @@
-import { h, FunctionComponent as FC, Fragment } from "preact";
-import { useCallback, useEffect, useState } from "preact/hooks";
-import { css } from "@emotion/css";
 import clonedeep from "lodash.clonedeep";
+import { css } from "@emotion/css";
+import { useCallback, useEffect, useState } from "preact/hooks";
+import { h, FunctionComponent as FC, Fragment } from "preact";
 
 import { useLatest } from "../hooks/useLatest";
 import { add2d, clamp, mul2d, svgPolygonPoints } from "../utils";
 import { RectCornerSvg } from "./RectCornerSvg";
 import { RectGridSvg } from "./RectGridSvg";
 import { RectArrowSvg } from "./RectArrowSvg";
-import type { AppImageData } from "src/App";
 
 interface ImageState {
   rect: Rect;
@@ -88,31 +87,43 @@ export const RectSvg: FC<Props> = ({
     scale,
   });
 
-  const onCornerDrag = useCallback((pointIdx: number, dt: Point2d) => {
-    const newRect = applyCornerMove(imageStateRef.current, pointIdx, dt);
-    setShownState(newRect);
-    onPreviewUpdate(newRect);
-  }, []);
+  const onCornerDrag = useCallback(
+    (pointIdx: number, dt: Point2d) => {
+      const newRect = applyCornerMove(imageStateRef.current, pointIdx, dt);
+      setShownState(newRect);
+      onPreviewUpdate(newRect);
+    },
+    [imageStateRef, onPreviewUpdate],
+  );
 
-  const onCornerDragEnd = useCallback((pointIdx: number, dt: Point2d) => {
-    const newState = applyCornerMove(imageStateRef.current, pointIdx, dt);
-    updateRect(newState);
-  }, []);
+  const onCornerDragEnd = useCallback(
+    (pointIdx: number, dt: Point2d) => {
+      const newState = applyCornerMove(imageStateRef.current, pointIdx, dt);
+      updateRect(newState);
+    },
+    [imageStateRef, updateRect],
+  );
 
-  const onArrowDrag = useCallback((dt: Point2d) => {
-    const newRect = applyMove(imageStateRef.current, dt);
-    setShownState(newRect);
-    onPreviewUpdate(newRect);
-  }, []);
+  const onArrowDrag = useCallback(
+    (dt: Point2d) => {
+      const newRect = applyMove(imageStateRef.current, dt);
+      setShownState(newRect);
+      onPreviewUpdate(newRect);
+    },
+    [imageStateRef, onPreviewUpdate],
+  );
 
-  const onArrowDragEnd = useCallback((dt: Point2d) => {
-    const newState = applyMove(imageStateRef.current, dt);
-    updateRect(newState);
-  }, []);
+  const onArrowDragEnd = useCallback(
+    (dt: Point2d) => {
+      const newState = applyMove(imageStateRef.current, dt);
+      updateRect(newState);
+    },
+    [imageStateRef, updateRect],
+  );
 
   const scaleIndependent = useCallback(
     (v: number) => v / imageStateRef.current.scale,
-    [],
+    [imageStateRef],
   );
 
   return (

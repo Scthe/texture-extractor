@@ -1,6 +1,5 @@
 import { h, FunctionComponent as FC, Fragment } from "preact";
 import { css } from "@emotion/css";
-
 import { midpoint2d, svgLinePath } from "../utils";
 
 interface Props {

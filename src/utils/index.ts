@@ -1,15 +1,16 @@
 // https://stackoverflow.com/questions/39419170/how-do-i-check-that-a-switch-block-is-exhaustive-in-typescript
 // does not work for enums that assign value for each member
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function assertUnreachable(_x?: never): never {
   throw new Error("Didn't expect to get here");
 }
 
-export function cancelEvent(e: Event) {
+export function cancelEvent(e: Event): boolean {
   e.stopPropagation();
   return false;
 }
 
-export const clamp = (x: number, minVal: number, maxVal: number) =>
+export const clamp = (x: number, minVal: number, maxVal: number): number =>
   Math.min(maxVal, Math.max(minVal, x));
 
 export const add2d = (a: Point2d, b: Point2d): Point2d => ({
@@ -38,7 +39,7 @@ export const between2d = (a: Point2d, b: Point2d, fac: number): Point2d => ({
 });
 
 // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d#path_commands
-export const coord = (p: Point2d) => `${p.x}, ${p.y}`;
+const coord = (p: Point2d): string => `${p.x}, ${p.y}`;
 
 export const svgLinePath = (a: Point2d, b: Point2d): string =>
   `M ${coord(a)} L ${coord(b)}`;

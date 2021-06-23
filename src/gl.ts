@@ -5,7 +5,11 @@ import { Shader } from "./gl-utils/Shader";
 import shaderVert from "./shaders/shaderV.vert";
 import shaderFrag from "./shaders/shaderF.frag";
 import { Texture, TextureType } from "./gl-utils/texture/Texture";
-import { createTextureOpts, TextureFilterMag, TextureFilterMin } from "./gl-utils/texture/TextureOpts";
+import {
+  createTextureOpts,
+  TextureFilterMag,
+  TextureFilterMin,
+} from "./gl-utils/texture/TextureOpts";
 import testImageUrl from "./test-image.jpg";
 import { clamp } from "./utils";
 
@@ -26,7 +30,9 @@ const applyDrawPrams = (gl: Webgl) => {
 const loadTexture = (
   gl: Webgl,
   path: string, // TODO loaded twice
-  width: number, height: number, sizedPixelFormat: number,
+  width: number,
+  height: number,
+  sizedPixelFormat: number,
 ): Promise<Texture> => {
   const texture = new Texture(
     gl,
@@ -44,7 +50,7 @@ const loadTexture = (
   return new Promise((resolve, reject) => {
     const img = new Image();
 
-    img.addEventListener('load', () => {
+    img.addEventListener("load", () => {
       const writePoint = {
         start: [0, 0, 0] as vec3,
         dimensions: texture.dimensions,
@@ -59,13 +65,15 @@ const loadTexture = (
       resolve(texture);
     });
 
-    img.addEventListener('error', reject);
+    img.addEventListener("error", reject);
 
     img.src = path;
   });
-}
+};
 
-export const initializeGlView = async (canvas: HTMLCanvasElement): Promise<GlContext> => {
+export const initializeGlView = async (
+  canvas: HTMLCanvasElement,
+): Promise<GlContext> => {
   const gl = createWebGl2Context(
     canvas,
     {
@@ -86,8 +94,12 @@ export const initializeGlView = async (canvas: HTMLCanvasElement): Promise<GlCon
   shader.use(gl);
 
   const imageTexture = await loadTexture(
-    gl, testImageUrl, 800, 1137, gl.RGB8UI
-  )
+    gl,
+    testImageUrl,
+    800,
+    1137,
+    gl.RGB8UI,
+  );
 
   return { gl, shader, imageTexture };
 };
@@ -102,12 +114,12 @@ const renderFullscreenQuad = ({ gl }: GlContext): void => {
 export const redraw = (ctx: GlContext, rect: Rect): void => {
   const { gl, shader, imageTexture } = ctx;
 
-  const points: Point2d[] = rect.map(p => ({
+  const points: Point2d[] = rect.map((p) => ({
     x: clamp(p.x / imageTexture.width, 0.0, 1.0),
     y: clamp(p.y / imageTexture.height, 0.0, 1.0),
   }));
-  const xs = points.map(p => p.x);
-  const ys = points.map(p => p.y);
+  const xs = points.map((p) => p.x);
+  const ys = points.map((p) => p.y);
   gl.uniform4fv(shader.getUniform("u_uv_X").location, xs);
   gl.uniform4fv(shader.getUniform("u_uv_Y").location, ys);
 

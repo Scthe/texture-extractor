@@ -1,6 +1,5 @@
 import { h, FunctionComponent as FC } from "preact";
 import { css, cx } from "@emotion/css";
-
 import * as s from "../style";
 
 interface Props {
