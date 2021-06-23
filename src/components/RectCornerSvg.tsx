@@ -7,7 +7,6 @@ import { useDrag } from "../hooks/useDrag";
 // TODO make invisible big circles as handles instead
 const RADIUS = 20;
 
-
 // TODO different colors - put inside class to manipulate
 const cornerStyle = css`
   cursor: pointer;
@@ -29,14 +28,18 @@ interface Props {
 }
 
 export const RectCornerSvg: FC<Props> = ({
-  idx, point, scaleIndependent, maxRadius,
-  onDrag, onDragEnd
+  idx,
+  point,
+  scaleIndependent,
+  maxRadius,
+  onDrag,
+  onDragEnd,
 }) => {
   const svgElRef = useRef<SVGEllipseElement>();
 
   useDrag(svgElRef.current as any, {
-    onDrag: e => onDrag(idx, e.delta),
-    onDragEnd: e => onDragEnd(idx, e.delta),
+    onDrag: (e) => onDrag(idx, e.delta),
+    onDragEnd: (e) => onDragEnd(idx, e.delta),
   });
 
   const radius = Math.min(scaleIndependent(RADIUS), maxRadius - 2);

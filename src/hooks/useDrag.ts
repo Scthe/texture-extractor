@@ -7,7 +7,8 @@ import { cancelEvent, sub2d } from "../utils";
 const POINTER_ID = 0;
 
 const getMousePosition = (pointer: Pointer): Point2d => ({
-  x: pointer.pageX, y: pointer.pageY,
+  x: pointer.pageX,
+  y: pointer.pageY,
 });
 
 interface DragEvent {
@@ -22,10 +23,7 @@ interface Callbacks {
   onDragEnd?: (e: DragEvent) => void;
 }
 
-export const useDrag = (
-  element: HTMLElement,
-  callbacks: Callbacks,
-) => {
+export const useDrag = (element: HTMLElement, callbacks: Callbacks) => {
   const callbacksRef = useLatest(callbacks);
 
   useEffect(() => {
@@ -34,15 +32,17 @@ export const useDrag = (
     }
     let startPos: Point2d = { x: 0, y: 0 };
     const createEvent = (pointer: Pointer): DragEvent => {
-      const now = getMousePosition(pointer)
+      const now = getMousePosition(pointer);
       const delta = sub2d(now, startPos);
-      return ({ start: startPos, delta, now });
-    }
+      return { start: startPos, delta, now };
+    };
 
     const tracker = new PointerTracker(element, {
       start(pointer, event) {
         cancelEvent(event);
-        if (pointer.id !== POINTER_ID) { return false }
+        if (pointer.id !== POINTER_ID) {
+          return false;
+        }
 
         // console.log(`start p=${pointIdx}`, { pointer, event });
         startPos = getMousePosition(pointer);
@@ -53,8 +53,10 @@ export const useDrag = (
       },
       move(_previousPointers, changedPointers, event) {
         cancelEvent(event);
-        const pointer = changedPointers.find(p => p.id === POINTER_ID);
-        if (pointer == null) { return; }
+        const pointer = changedPointers.find((p) => p.id === POINTER_ID);
+        if (pointer == null) {
+          return;
+        }
 
         // console.log(`move p=${pointIdx}: ${dt.x},${dt.y}`, { startPos, pointer, event });
         if (callbacksRef.current.onDrag) {
@@ -63,7 +65,9 @@ export const useDrag = (
       },
       end(pointer, event, cancelled) {
         cancelEvent(event);
-        if (pointer.id !== POINTER_ID) { return; }
+        if (pointer.id !== POINTER_ID) {
+          return;
+        }
 
         // console.log(`end p=${pointIdx}: ${dt.x},${dt.y}`, { pointer, event, cancelled });
         if (callbacksRef.current.onDragEnd) {
@@ -74,6 +78,8 @@ export const useDrag = (
       rawUpdates: false,
     });
 
-    return () => { tracker.stop() };
+    return () => {
+      tracker.stop();
+    };
   }, [element]);
-}
+};

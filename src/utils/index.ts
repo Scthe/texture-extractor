@@ -45,3 +45,24 @@ export const svgLinePath = (a: Point2d, b: Point2d): string =>
 
 export const svgPolygonPoints = (...points: Point2d[]): string =>
   points.map(coord).join(" ");
+
+export const hexAsSvgColor = (v: string): string => `%23${v.substring(1)}`;
+
+function assertSignal(signal: AbortSignal) {
+  if (signal.aborted) throw new DOMException("AbortError", "AbortError");
+}
+
+export async function abortable<T>(
+  signal: AbortSignal,
+  promise: Promise<T>,
+): Promise<T> {
+  assertSignal(signal);
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) => {
+      signal.addEventListener("abort", () =>
+        reject(new DOMException("AbortError", "AbortError")),
+      );
+    }),
+  ]);
+}

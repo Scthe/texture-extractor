@@ -3,8 +3,6 @@ import { css } from "@emotion/css";
 
 import { midpoint2d, svgLinePath } from "../utils";
 
-
-
 interface Props {
   rect: Rect;
   scaleIndependent: (v: number) => number;
@@ -17,19 +15,19 @@ export const RectGridSvg: FC<Props> = ({ rect, scaleIndependent }) => {
   const midRight = midpoint2d(rect[1], rect[3]);
 
   const midlineStyle = css`
-  fill: none;
-  pointer-events: none;
-  stroke: #646464;
-  stroke-dasharray: ${scaleIndependent(15)};
-  stroke-width: ${scaleIndependent(1.5)};
-`;
+    fill: none;
+    pointer-events: none;
+    stroke: #646464;
+    stroke-dasharray: ${scaleIndependent(15)};
+    stroke-width: ${scaleIndependent(1.5)};
+  `;
   const quaterStyle = css`
-  fill: none;
-  pointer-events: none;
-  stroke: #646464ea;
-  stroke-dasharray: ${scaleIndependent(5)};
-  stroke-width: ${scaleIndependent(1)};
-`;
+    fill: none;
+    pointer-events: none;
+    stroke: #646464ea;
+    stroke-dasharray: ${scaleIndependent(5)};
+    stroke-width: ${scaleIndependent(1)};
+  `;
 
   return (
     <Fragment>

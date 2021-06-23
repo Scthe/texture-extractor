@@ -17,27 +17,41 @@ interface ImageState {
 }
 
 const addDeltaToPoint = (
-  point: Point2d, delta: Point2d, { scale, imageData }: ImageState
+  point: Point2d,
+  delta: Point2d,
+  { scale, imageData }: ImageState,
 ): Point2d => {
   const p = add2d(point, mul2d(delta, 1.0 / scale));
-  p.x = clamp(p.x, imageData.borderSafeSpace, imageData.borderSafeSpace + imageData.width);
-  p.y = clamp(p.y, imageData.borderSafeSpace, imageData.borderSafeSpace + imageData.height);
+  p.x = clamp(
+    p.x,
+    imageData.borderSafeSpace,
+    imageData.borderSafeSpace + imageData.width,
+  );
+  p.y = clamp(
+    p.y,
+    imageData.borderSafeSpace,
+    imageData.borderSafeSpace + imageData.height,
+  );
   return p;
 };
 
 const applyCornerMove = (
-  imageState: ImageState, pointIdx: number, dt: Point2d
+  imageState: ImageState,
+  pointIdx: number,
+  dt: Point2d,
 ): Rect => {
   const newState = clonedeep<Rect>(imageState.rect);
-  newState[pointIdx] = addDeltaToPoint(imageState.rect[pointIdx], dt, imageState);
+  newState[pointIdx] = addDeltaToPoint(
+    imageState.rect[pointIdx],
+    dt,
+    imageState,
+  );
   return newState;
-}
+};
 
-const applyMove = (
-  imageState: ImageState, dt: Point2d
-): Rect => {
-  return imageState.rect.map(p => addDeltaToPoint(p, dt, imageState)) as Rect;
-}
+const applyMove = (imageState: ImageState, dt: Point2d): Rect => {
+  return imageState.rect.map((p) => addDeltaToPoint(p, dt, imageState)) as Rect;
+};
 
 const rectSvgStyle = css`
   fill: none;
@@ -53,13 +67,15 @@ interface Props {
   onPreviewUpdate: (rect: Rect) => void;
 }
 
-
 // TODO multiple rects
 // TODO throttle
 
 export const RectSvg: FC<Props> = ({
-  rect, scale, imageData,
-  updateRect, onPreviewUpdate
+  rect,
+  scale,
+  imageData,
+  updateRect,
+  onPreviewUpdate,
 }) => {
   const [shownRect, setShownState] = useState<Rect>(clonedeep(rect));
   useEffect(() => {
@@ -67,7 +83,9 @@ export const RectSvg: FC<Props> = ({
   }, [rect]);
 
   const imageStateRef = useLatest<ImageState>({
-    imageData, rect, scale
+    imageData,
+    rect,
+    scale,
   });
 
   const onCornerDrag = useCallback((pointIdx: number, dt: Point2d) => {
@@ -94,7 +112,8 @@ export const RectSvg: FC<Props> = ({
 
   const scaleIndependent = useCallback(
     (v: number) => v / imageStateRef.current.scale,
-    []);
+    [],
+  );
 
   return (
     <Fragment>
@@ -112,10 +131,7 @@ export const RectSvg: FC<Props> = ({
       />
 
       {/* mid lines */}
-      <RectGridSvg
-        rect={shownRect}
-        scaleIndependent={scaleIndependent}
-      />
+      <RectGridSvg rect={shownRect} scaleIndependent={scaleIndependent} />
 
       {/* arrow */}
       <RectArrowSvg
@@ -126,19 +142,17 @@ export const RectSvg: FC<Props> = ({
       />
 
       {/* corners */}
-      {
-        shownRect.map((pp, idx) =>
-          <RectCornerSvg
-            key={idx}
-            idx={idx}
-            point={pp}
-            scaleIndependent={scaleIndependent}
-            onDrag={onCornerDrag}
-            onDragEnd={onCornerDragEnd}
-            maxRadius={imageData.borderSafeSpace}
-          />
-        )
-      }
+      {shownRect.map((pp, idx) => (
+        <RectCornerSvg
+          key={idx}
+          idx={idx}
+          point={pp}
+          scaleIndependent={scaleIndependent}
+          onDrag={onCornerDrag}
+          onDragEnd={onCornerDragEnd}
+          maxRadius={imageData.borderSafeSpace}
+        />
+      ))}
     </Fragment>
   );
 };

@@ -72,3 +72,15 @@ type vec3 = [number, number, number];
 
 interface Point2d { x: number; y: number; };
 type Rect = [Point2d, Point2d, Point2d, Point2d];
+
+interface SelectionRect {
+  id: number;
+  points: Rect;
+  color: string;
+}
+
+interface AppImageData {
+  width: number;
+  height: number;
+  borderSafeSpace: number;
+}

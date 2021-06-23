@@ -24,21 +24,20 @@ module.exports = {
     "no-restricted-imports": [
       "error",
       {
-        paths: ["lodash", "date-fns", "@material-ui", "@material-ui/core"],
+        paths: ["lodash"],
       },
     ],
     "@typescript-eslint/no-var-requires": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
     "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": [
-      "error",
-      {
-        additionalHooks: "(useAsync|useAsyncCallback)",
-      },
-    ],
+    "react-hooks/exhaustive-deps": "error",
     "import/order": "error",
     "import/no-duplicates": "off", // default eslint is good enough?
     "import/no-unused-modules": ["error", { unusedExports: true }],
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { varsIgnorePattern: "^h$" },
+    ],
     // we have TS for following:
     "import/namespace": "off",
     "import/no-named-as-default": "off",

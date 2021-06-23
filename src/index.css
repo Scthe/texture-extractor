@@ -9,8 +9,7 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  font-family: "Roboto", sans-serif;
 }
 
 html {
@@ -25,6 +24,7 @@ body {
   margin: 0;
   border: none;
   overflow-y: hidden;
+  color: #121212;
 }
 
 * {

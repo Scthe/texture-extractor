@@ -1,5 +1,5 @@
 {
-  "name": "texture-ripper-web",
+  "name": "texture-extractor-web",
   "version": "1.0.0",
   "description": "",
   "author": "Marcin Matuszczyk (Scthe)",
@@ -16,12 +16,12 @@
   "dependencies": {
     "@emotion/css": "^11.1.3",
     "@yarnpkg/pnpify": "^3.0.0-rc.6",
+    "file-drop-element": "^1.0.1",
     "lodash.clonedeep": "^4.5.0",
     "pinch-zoom-element": "^1.1.1",
     "pointer-tracker": "^2.4.0",
     "preact": "^10.5.13",
-    "preact-compat": "^3.19.0",
-    "react-zoom-pan-pinch": "^2.0.2"
+    "preact-compat": "^3.19.0"
   },
   "devDependencies": {
     "@prefresh/snowpack": "^3.0.0",
@@ -33,6 +33,8 @@
     "@types/lodash.clonedeep": "^4.5.6",
     "@types/mocha": "^8.2.2",
     "@types/snowpack-env": "^2.3.3",
+    "@typescript-eslint/eslint-plugin": "^4.28.0",
+    "@typescript-eslint/parser": "^4.28.0",
     "@web/test-runner": "^0.13.3",
     "chai": "^4.3.4",
     "eslint": "^7.20.0",
