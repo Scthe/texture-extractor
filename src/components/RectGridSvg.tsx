@@ -17,16 +17,16 @@ export const RectGridSvg: FC<Props> = ({ rect, color, scaleIndependent }) => {
   const midlineStyle = css`
     fill: none;
     pointer-events: none;
-    stroke: ${color}60;
+    stroke: ${color}80;
     stroke-dasharray: ${scaleIndependent(15)};
-    stroke-width: ${scaleIndependent(1.5)};
+    stroke-width: ${scaleIndependent(2)};
   `;
   const quaterStyle = css`
     fill: none;
     pointer-events: none;
-    stroke: ${color}40;
+    stroke: ${color}60;
     stroke-dasharray: ${scaleIndependent(5)};
-    stroke-width: ${scaleIndependent(1)};
+    stroke-width: ${scaleIndependent(1.5)};
   `;
 
   return (

@@ -76,7 +76,7 @@ export const RectSvg: FC<Props> = ({
   const [shownRect, setShownState] = useState<Rect>(clonedeep(rect.points));
   useEffect(() => {
     setShownState(clonedeep(rect.points));
-  }, [rect]);
+  }, [rect.points]);
 
   const imageStateRef = useLatest<ImageState>({
     imageData,

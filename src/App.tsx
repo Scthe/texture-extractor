@@ -1,14 +1,15 @@
 import { h } from "preact";
-import { useCallback } from "preact/hooks";
+import { useCallback, useRef } from "preact/hooks";
 import { createPortal } from "preact/compat";
 import { css } from "@emotion/css";
 import "pinch-zoom-element";
 import type { FileDropEvent } from "file-drop-element";
 
-import { UVscreen } from "./screens/UVscreen";
+import { RefrawWebGlRef, UVscreen } from "./screens/UVscreen";
 import { ImageScreen } from "./screens/ImageScreen";
 import { WelcomeModal } from "./screens/WelcomeModal";
 import { useAppState } from "./state/AppState";
+import { useLatest } from "./hooks/useLatest";
 
 declare module "preact" {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -24,6 +25,8 @@ interface FileDropAttributes extends preact.JSX.HTMLAttributes<HTMLElement> {
   onfiledrop?: (e: FileDropEvent) => void;
 }
 
+// TODO add example images to repo, with example rectangles
+
 const modalContainer = document.getElementById("modals")!;
 
 const containterStyle = css`
@@ -32,15 +35,29 @@ const containterStyle = css`
 `;
 
 function App(): h.JSX.Element {
-  useAppState();
+  const { moveRectangle } = useAppState();
+  const redrawWebglRef = useRef<RefrawWebGlRef>();
+  const moveRectangleRef = useLatest(moveRectangle);
 
   // redrawUVview.current(newState); // TODO error
-  const onDragging = useCallback((id: number, rect: Rect) => {}, []);
-  const onDragEnd = useCallback((id: number, rect: Rect) => {}, []);
+  const onDragging = useCallback((id: number, rect: Rect) => {
+    if (redrawWebglRef.current) {
+      redrawWebglRef.current.redrawWebGl(rect);
+    }
+  }, []);
+  const onDragEnd = useCallback(
+    (id: number, rect: Rect) => {
+      if (redrawWebglRef.current) {
+        redrawWebglRef.current.redrawWebGl(rect);
+      }
+      moveRectangleRef.current(id, rect);
+    },
+    [moveRectangleRef],
+  );
 
   return (
     <div class={containterStyle}>
-      <UVscreen />
+      <UVscreen ref={redrawWebglRef} />
       <ImageScreen onDragging={onDragging} onDragEnd={onDragEnd} />
       {createPortal(<WelcomeModal />, modalContainer)}
     </div>

@@ -16,6 +16,7 @@ interface AppState {
   setImage: (image: AppImageData | null) => void;
   addRectangle: () => void;
   removeRectangle: (id: number) => void;
+  moveRectangle: (id: number, points: Rect) => void;
   setSoften: (nextValue: boolean) => void;
 }
 
@@ -129,7 +130,10 @@ export const useAppState = create<AppState>((set) => ({
   moveRectangle: (id: number, points: Rect) =>
     set((state) => ({
       ...state,
-      selectedRectangleId: id, // TODO finish
+      selectedRectangleId: id,
+      rectangles: state.rectangles.map((r) =>
+        r.id === id ? { ...r, points } : r,
+      ),
     })),
   setSoften: (nextValue: boolean) =>
     set((state) => ({
@@ -141,11 +145,12 @@ export const useAppState = create<AppState>((set) => ({
 export const useAppStatePartial = <T extends keyof AppState>(
   ...ks: T[]
 ): Pick<AppState, T> => {
-  return useAppState((state) =>
-    ks.reduce((o, k) => {
-      o[k] = state[k];
-      return o;
-    }, {} as Partial<AppState>),
+  return useAppState(
+    (state) =>
+      ks.reduce((o, k) => {
+        o[k] = state[k];
+        return o;
+      }, {} as Partial<AppState>),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ) as any;
 };

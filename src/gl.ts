@@ -10,7 +10,6 @@ import {
   TextureFilterMag,
   TextureFilterMin,
 } from "./gl-utils/texture/TextureOpts";
-import testImageUrl from "./test-image.jpg";
 import { clamp } from "./utils";
 
 export interface GlContext {
@@ -19,25 +18,29 @@ export interface GlContext {
   imageTexture: Texture;
 }
 
+export const destroyGlContext = (ctx: GlContext): void => {
+  ctx.shader.destroy(ctx.gl);
+  ctx.imageTexture.destroy(ctx.gl);
+};
+
 const applyDrawPrams = (gl: Webgl) => {
   // https://github.com/Scthe/WebFX/blob/master/src/gl-utils/DrawParams/applyDrawParams.ts
   gl.disable(gl.DEPTH_TEST);
   gl.disable(gl.STENCIL_TEST);
   gl.disable(gl.CULL_FACE);
   gl.colorMask(true, true, true, true);
+  gl.clearColor(0, 0, 0, 0);
 };
 
 const loadTexture = (
   gl: Webgl,
-  path: string, // TODO loaded twice
-  width: number,
-  height: number,
+  imageData: ImageData,
   sizedPixelFormat: number,
-): Promise<Texture> => {
+): Texture => {
   const texture = new Texture(
     gl,
     TextureType.Texture2d,
-    [width, height, 0],
+    [imageData.width, imageData.height, 0],
     0,
     sizedPixelFormat,
     createTextureOpts({
@@ -46,38 +49,28 @@ const loadTexture = (
     }),
   );
 
-  // https://github.com/Scthe/WebFX/blob/09713a3e7ebaa1484ff53bd8a007908a5340ca8e/src/gl-utils/index.ts#L111
-  return new Promise((resolve, reject) => {
-    const img = new Image();
+  const writePoint = {
+    start: [0, 0, 0] as vec3,
+    dimensions: texture.dimensions,
+  };
+  const writeSource = {
+    unsizedPixelFormat: gl.RGB_INTEGER,
+    perChannelType: gl.UNSIGNED_BYTE,
+    data: imageData,
+  };
+  texture.write(gl, 0, writePoint, writeSource);
 
-    img.addEventListener("load", () => {
-      const writePoint = {
-        start: [0, 0, 0] as vec3,
-        dimensions: texture.dimensions,
-      };
-      const writeSource = {
-        unsizedPixelFormat: gl.RGB_INTEGER,
-        perChannelType: gl.UNSIGNED_BYTE,
-        data: img,
-      };
-      texture.write(gl, 0, writePoint, writeSource);
-
-      resolve(texture);
-    });
-
-    img.addEventListener("error", reject);
-
-    img.src = path;
-  });
+  return texture;
 };
 
-export const initializeGlView = async (
+export const initializeGlView = (
   canvas: HTMLCanvasElement,
-): Promise<GlContext> => {
+  imageData: ImageData,
+): GlContext => {
   const gl = createWebGl2Context(
     canvas,
     {
-      alpha: false,
+      alpha: true,
       antialias: false,
       depth: true,
       failIfMajorPerformanceCaveat: true,
@@ -88,18 +81,11 @@ export const initializeGlView = async (
   );
 
   applyDrawPrams(gl);
-  // gl.viewport(0, 0, canvas.width, canvas.height);
 
   const shader = new Shader(gl, shaderVert, shaderFrag);
   shader.use(gl);
 
-  const imageTexture = await loadTexture(
-    gl,
-    testImageUrl,
-    800,
-    1137,
-    gl.RGB8UI,
-  );
+  const imageTexture = loadTexture(gl, imageData, gl.RGB8UI);
 
   return { gl, shader, imageTexture };
 };
@@ -111,8 +97,24 @@ const renderFullscreenQuad = ({ gl }: GlContext): void => {
   gl.drawArrays(gl.TRIANGLES, 0, triCnt * 3);
 };
 
+const getRectDimensions = (rect: Rect): [number, number] => {
+  const w1 = Math.abs(rect[0].x - rect[1].x);
+  const w2 = Math.abs(rect[2].x - rect[3].x);
+  const h1 = Math.abs(rect[0].y - rect[2].y);
+  const h2 = Math.abs(rect[1].y - rect[3].y);
+  return [(w1 + w2) / 2, (h1 + h2) / 2];
+};
+
 export const redraw = (ctx: GlContext, rect: Rect): void => {
   const { gl, shader, imageTexture } = ctx;
+
+  // clear
+  gl.viewport(0, 0, imageTexture.width, imageTexture.height);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+
+  // draw
+  const rectDims = getRectDimensions(rect);
+  gl.viewport(0, 0, rectDims[0], rectDims[1]);
 
   const points: Point2d[] = rect.map((p) => ({
     x: clamp(p.x / imageTexture.width, 0.0, 1.0),

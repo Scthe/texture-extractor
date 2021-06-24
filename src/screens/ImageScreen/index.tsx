@@ -1,13 +1,13 @@
 import { h, FunctionComponent as FC } from "preact";
-import { useEffect, useRef } from "preact/hooks";
+import { useRef } from "preact/hooks";
 import type PinchZoom from "pinch-zoom-element";
-import type { ScaleToOpts } from "pinch-zoom-element";
 
 import { ZoomNumber } from "../../components/ZoomNumber";
 import { ScreenName } from "../../components/ScreenName";
 import { SettingsOpenButton } from "../../components/SettingsOpenButton";
 import { usePinchScaleChange } from "../../hooks/usePinchScaleChange";
 import { useBoolState } from "../../hooks/useBoolState";
+import { useAutoZoomPinchZoom } from "../../hooks/useAutoZoomPinchZoom";
 import { useAppStatePartial } from "../../state/AppState";
 import * as s from "../../style";
 import { ImageSettings } from "./ImageSettings";
@@ -30,32 +30,7 @@ export const ImageScreen: FC<Props> = ({ onDragEnd, onDragging }) => {
 
   // scale initial image view to fill the screen
   const pinchZoomRef = useRef<PinchZoom>();
-  useEffect(() => {
-    if (image) {
-      const opts: ScaleToOpts = {
-        relativeTo: "content",
-        allowChangeEvent: true,
-      };
-      const el = pinchZoomRef.current;
-      const w = el.clientWidth;
-      const h = el.clientHeight;
-      const iw = image.data.width;
-      const ih = image.data.height;
-      const ratioW = iw / w;
-      const ratioH = ih / h;
-      // console.log({ w, h, iw, ih, ratioW, ratioH });
-
-      if (ratioW > ratioH) {
-        // image is wider than viewport, scale to fit and center vertically
-        el.scaleTo(1 / ratioW, opts);
-        el.setTransform({ x: 0, y: (h - ih / ratioW) / 2 });
-      } else {
-        // image is higher than viewport, scale to fit and center horizontally
-        el.scaleTo(1 / ratioH, opts);
-        el.setTransform({ x: (w - iw / ratioH) / 2, y: 0 });
-      }
-    }
-  }, [image]);
+  useAutoZoomPinchZoom(image, pinchZoomRef);
 
   return (
     <div class={s.appColumnStyle}>
