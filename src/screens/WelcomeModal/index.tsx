@@ -7,6 +7,7 @@ import "file-drop-element";
 import * as s from "../../style";
 import { Icon } from "../../components/Icon";
 import { decodeImage } from "../../utils/decodeImage";
+import { useAppStatePartial } from "../../state/AppState";
 import { ImageAvatar } from "./ImageAvatar";
 import { ExampleImage, EXAMPLE_IMAGES } from "./exampleImages";
 
@@ -102,11 +103,6 @@ const dropStyle = css`
   }
 `;
 
-interface Props {
-  isOpen: boolean;
-  // setImage: () => void;
-}
-
 const getExampleAsFile = async (img: ExampleImage) => {
   // try {
   // this.setState({ fetchingDemoIndex: index });
@@ -121,7 +117,8 @@ const getExampleAsFile = async (img: ExampleImage) => {
   // }
 };
 
-export const WelcomeModal: FC<Props> = ({ isOpen }) => {
+export const WelcomeModal: FC<unknown> = () => {
+  const { image, setImage } = useAppStatePartial("image", "setImage");
   const rectShared = {
     class: purpleRect,
     rx: s.borderRadius("m"),
@@ -135,18 +132,24 @@ export const WelcomeModal: FC<Props> = ({ isOpen }) => {
     fileInputEl.current && fileInputEl.current.click();
   };
 
-  const startEditorWithFile = useCallback((file: File, isExample: boolean) => {
-    console.log("SELECTED", file);
-    fileInputEl.current && (fileInputEl.current.value = "");
-    const abortCtrl = new AbortController();
-    decodeImage(abortCtrl.signal, file).then((d) => {
-      console.log(d); // TODO error handling
-    });
-  }, []);
+  const startEditorWithFile = useCallback(
+    (file: File, exampleImg: ExampleImage | null) => {
+      fileInputEl.current && (fileInputEl.current.value = "");
+      const abortCtrl = new AbortController();
+      decodeImage(abortCtrl.signal, file).then((imageData) => {
+        // TODO error handling
+        setImage({
+          data: imageData,
+          exampleName: exampleImg?.name,
+        });
+      });
+    },
+    [setImage],
+  );
 
   const handleDemoClick = useCallback(
     (img: ExampleImage) => {
-      getExampleAsFile(img).then((f) => startEditorWithFile(f, true));
+      getExampleAsFile(img).then((f) => startEditorWithFile(f, img));
     },
     [startEditorWithFile],
   );
@@ -156,7 +159,7 @@ export const WelcomeModal: FC<Props> = ({ isOpen }) => {
       const fileInput = event.target as HTMLInputElement;
       const file = fileInput.files && fileInput.files[0];
       if (!file) return;
-      startEditorWithFile(file, false);
+      startEditorWithFile(file, null);
     },
     [startEditorWithFile],
   );
@@ -165,12 +168,12 @@ export const WelcomeModal: FC<Props> = ({ isOpen }) => {
     ({ files }: FileDropEvent) => {
       if (!files || files.length === 0) return;
       const file = files[0];
-      startEditorWithFile(file, false);
+      startEditorWithFile(file, null);
     },
     [startEditorWithFile],
   );
 
-  if (!isOpen) {
+  if (image != null) {
     return null;
   }
 
@@ -185,6 +188,7 @@ export const WelcomeModal: FC<Props> = ({ isOpen }) => {
             onChange={handleFileChange}
           />
 
+          {/* TODO this looks lame */}
           <h1 class={cx(s.textCenter, s.noMargins, header)}>
             Texture extractor
           </h1>

@@ -13,7 +13,6 @@ export const ZoomNumber: FC<Props> = ({ zoom, theme }) => {
     border-bottom-left-radius: ${s.borderRadius("s")};
   `;
 
-  // TODO format to percentages, with only 2 decimal numbers
   return (
     <div class={cx(container, s.imageInfoTopStyle(theme), s.textNormal)}>
       {`zoom ${Math.floor(zoom * 100)}%`}

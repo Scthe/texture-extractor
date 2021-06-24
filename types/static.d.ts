@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unused-modules */
 /* Use this file to declare any custom file extensions for importing */
 /* Use this folder to also add/extend a package d.ts file, if needed. */
 
@@ -58,6 +59,7 @@ declare module '*.png' {
 
 /* CUSTOM: ADD YOUR OWN HERE */
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Webgl extends WebGL2RenderingContext {
 }
 declare module '*.vert' {
@@ -70,7 +72,7 @@ declare module '*.frag' {
 }
 type vec3 = [number, number, number];
 
-interface Point2d { x: number; y: number; };
+interface Point2d { x: number; y: number; }
 type Rect = [Point2d, Point2d, Point2d, Point2d];
 
 interface SelectionRect {
@@ -80,7 +82,8 @@ interface SelectionRect {
 }
 
 interface AppImageData {
-  width: number;
-  height: number;
-  borderSafeSpace: number;
+  data: ImageData;
+  exampleName: string | undefined;
 }
+
+type RectMoveCb = (id: number, rect: Rect) => void;

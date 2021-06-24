@@ -4,10 +4,11 @@ import { midpoint2d, svgLinePath } from "../utils";
 
 interface Props {
   rect: Rect;
+  color: string;
   scaleIndependent: (v: number) => number;
 }
 
-export const RectGridSvg: FC<Props> = ({ rect, scaleIndependent }) => {
+export const RectGridSvg: FC<Props> = ({ rect, color, scaleIndependent }) => {
   const midTop = midpoint2d(rect[2], rect[3]);
   const midBottom = midpoint2d(rect[0], rect[1]);
   const midLeft = midpoint2d(rect[0], rect[2]);
@@ -16,14 +17,14 @@ export const RectGridSvg: FC<Props> = ({ rect, scaleIndependent }) => {
   const midlineStyle = css`
     fill: none;
     pointer-events: none;
-    stroke: #646464;
+    stroke: ${color}60;
     stroke-dasharray: ${scaleIndependent(15)};
     stroke-width: ${scaleIndependent(1.5)};
   `;
   const quaterStyle = css`
     fill: none;
     pointer-events: none;
-    stroke: #646464ea;
+    stroke: ${color}40;
     stroke-dasharray: ${scaleIndependent(5)};
     stroke-width: ${scaleIndependent(1)};
   `;

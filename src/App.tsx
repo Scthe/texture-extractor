@@ -1,14 +1,14 @@
 import { h } from "preact";
-import { useCallback, useState } from "preact/hooks";
+import { useCallback } from "preact/hooks";
 import { createPortal } from "preact/compat";
 import { css } from "@emotion/css";
 import "pinch-zoom-element";
 import type { FileDropEvent } from "file-drop-element";
 
-import testImageUrl from "./test-image.jpg";
 import { UVscreen } from "./screens/UVscreen";
 import { ImageScreen } from "./screens/ImageScreen";
 import { WelcomeModal } from "./screens/WelcomeModal";
+import { useAppState } from "./state/AppState";
 
 declare module "preact" {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -24,7 +24,6 @@ interface FileDropAttributes extends preact.JSX.HTMLAttributes<HTMLElement> {
   onfiledrop?: (e: FileDropEvent) => void;
 }
 
-const BORDER_SAFE_SPACE = 20;
 const modalContainer = document.getElementById("modals")!;
 
 const containterStyle = css`
@@ -33,34 +32,17 @@ const containterStyle = css`
 `;
 
 function App(): h.JSX.Element {
-  // TODO into separate hook
-  const imageData = {
-    width: 800,
-    height: 1137,
-    borderSafeSpace: BORDER_SAFE_SPACE,
-  };
-  const [points, setPoints] = useState<Rect>([
-    { x: BORDER_SAFE_SPACE, y: imageData.height / 2 },
-    { x: imageData.width / 3, y: imageData.height / 2 },
-    { x: BORDER_SAFE_SPACE, y: BORDER_SAFE_SPACE },
-    { x: imageData.width / 3, y: BORDER_SAFE_SPACE },
-  ]);
+  useAppState();
 
-  const onPreviewUpdate = useCallback((newState: Rect) => {
-    redrawUVview.current(newState);
-  }, []);
+  // redrawUVview.current(newState); // TODO error
+  const onDragging = useCallback((id: number, rect: Rect) => {}, []);
+  const onDragEnd = useCallback((id: number, rect: Rect) => {}, []);
 
   return (
     <div class={containterStyle}>
-      <UVscreen points={points} imageData={imageData} />
-      <ImageScreen
-        points={points}
-        imageData={imageData}
-        imageUrl={testImageUrl}
-        setPoints={setPoints}
-        onPreviewUpdate={onPreviewUpdate}
-      />
-      {createPortal(<WelcomeModal isOpen={true} />, modalContainer)}
+      <UVscreen />
+      <ImageScreen onDragging={onDragging} onDragEnd={onDragEnd} />
+      {createPortal(<WelcomeModal />, modalContainer)}
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { SettingsPanel } from "../../components/SettingsPanel";
 import { SettingsSection } from "../../components/SettingsSection";
 import { Button } from "../../components/Button";
 import { Checkbox, CheckboxLabel } from "../../components/Checkbox";
+import { useAppStatePartial } from "../../state/AppState";
 import * as s from "../../style";
 
 interface Props {
@@ -22,13 +23,17 @@ export const ImageSettings: FC<Props> = ({
   isDimed,
   setIsDimed,
 }) => {
+  const { setImage } = useAppStatePartial("setImage");
+
   return (
     <SettingsPanel isOpen={isOpen || true} setSettingsOpen={setSettingsOpen}>
       <SettingsSection className={s.flexCenter}>
         <Button
           theme={theme}
           icon="close"
-          onClick={() => {}} // TODO close image
+          onClick={() => {
+            setImage(null);
+          }}
         >
           Close Image
         </Button>

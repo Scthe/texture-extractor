@@ -38,13 +38,13 @@ void main() {
 
   int vertIdxInMiniPlane = getVertIdx(gl_VertexID % 6); // in range [0, 3]
   v_miniPlaneID = gl_VertexID / 6;
-  vec2 columnRow = vec2( // in which column and row we are e.g. (1, 3) // TODO debug
+  vec2 columnRow = vec2( // in which column and row we are e.g. (1, 3)
     float(v_miniPlaneID % MINI_PLANES),
     float(v_miniPlaneID / MINI_PLANES)
   );
 
   // position
-  vec2 miniPlaneSize = vec2(1.0f / float(MINI_PLANES), 1.0f / float(MINI_PLANES)); // TODO debug
+  vec2 miniPlaneSize = vec2(1.0f / float(MINI_PLANES), 1.0f / float(MINI_PLANES));
   vec2 miniPlaneBase = miniPlaneSize * columnRow;
   vec2 offsetInsideMiniPlane = miniPlaneSize * positions_0_1[vertIdxInMiniPlane];
   vec2 pos = miniPlaneBase + offsetInsideMiniPlane;

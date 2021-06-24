@@ -9,6 +9,7 @@ import { ScreenName } from "../../components/ScreenName";
 import { SettingsOpenButton } from "../../components/SettingsOpenButton";
 import { usePinchScaleChange } from "../../hooks/usePinchScaleChange";
 import { useBoolState } from "../../hooks/useBoolState";
+import { useAppStatePartial } from "../../state/AppState";
 import * as s from "../../style";
 import { UvSettings } from "./UvSettings";
 
@@ -22,22 +23,20 @@ const container = css`
   background-size: 20px 20px;
 `;
 
-interface Props {
-  points: Rect;
-  imageData: AppImageData;
-}
-
-export const UVscreen: FC<Props> = ({ points, imageData }) => {
+export const UVscreen: FC<unknown> = () => {
+  /*
+  const padding = useAppStatePartial("borderSafeSpace");
   const pointsRef = useLatest(points);
   const imageDataRef = useLatest(imageData);
-  const [isSettingsOpen, setSettingsOpen] = useBoolState(false);
+  */
 
+  const [isSettingsOpen, setSettingsOpen] = useBoolState(false);
   const canvasRef = useRef<HTMLCanvasElement>();
+  /*
   const glContextRef = useRef<GlContext | null>();
 
   const redrawUVviewRef = useLatest((rect: Rect) => {
     if (glContextRef.current != null) {
-      const padding = imageDataRef.current.borderSafeSpace;
       const rectNoPadding = rect.map((p) =>
         sub2d(p, { x: padding, y: padding }),
       ) as Rect;
@@ -48,9 +47,10 @@ export const UVscreen: FC<Props> = ({ points, imageData }) => {
   useEffect(() => {
     initializeGlView(canvasRef.current).then((ctx) => {
       glContextRef.current = ctx;
-      redrawUVviewRef.current(pointsRef.current);
+      // redrawUVviewRef.current(pointsRef.current);
     });
   }, [pointsRef, redrawUVviewRef]);
+  */
 
   const [zoom, onPinchZoomChange] = usePinchScaleChange();
 

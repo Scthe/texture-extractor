@@ -14,6 +14,7 @@ import { useDrag } from "../hooks/useDrag";
 
 interface Props {
   rect: Rect;
+  color: string;
   scaleIndependent: (v: number) => number;
   onDrag: (dt: Point2d) => void;
   onDragEnd: (dt: Point2d) => void;
@@ -21,6 +22,7 @@ interface Props {
 
 export const RectArrowSvg: FC<Props> = ({
   rect,
+  color,
   scaleIndependent,
   onDrag,
   onDragEnd,
@@ -34,12 +36,12 @@ export const RectArrowSvg: FC<Props> = ({
 
   const arrowStyle = css`
     cursor: pointer;
-    fill: #13618561;
-    stroke: #136185;
+    fill: ${color}30;
+    stroke: ${color}80;
     transition: fill 0.5s;
-    stroke-width: ${scaleIndependent(1)};
+    stroke-width: ${scaleIndependent(2)};
     &:hover {
-      fill: #136185;
+      fill: ${color}80;
     }
   `;
 

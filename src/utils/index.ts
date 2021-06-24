@@ -67,3 +67,22 @@ export async function abortable<T>(
     }),
   ]);
 }
+
+export const ensurePointInsideImage = (
+  p: Point2d,
+  imageData: AppImageData,
+  padding: number,
+): void => {
+  const { width, height } = imageData.data;
+  p.x = clamp(p.x, padding, padding + width);
+  p.y = clamp(p.y, padding, padding + height);
+};
+
+export const getFromArray = <T>(arr: T[], idx: number): T => {
+  if (arr.length === 0) {
+    throw new Error(
+      `getFromArray received array of length 0. How can I select something from this?`,
+    );
+  }
+  return arr[Math.abs(idx) % arr.length];
+};

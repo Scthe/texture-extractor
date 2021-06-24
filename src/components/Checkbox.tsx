@@ -48,7 +48,6 @@ export const Checkbox: FC<Props> = ({
     }
   }, [checked, onChecked]);
 
-  // TODO check if click on label causes change. cursors?
   return (
     <div
       className={cx(className, baseClass, checked && checkedClass)}

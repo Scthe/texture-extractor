@@ -21,7 +21,8 @@
     "pinch-zoom-element": "^1.1.1",
     "pointer-tracker": "^2.4.0",
     "preact": "^10.5.13",
-    "preact-compat": "^3.19.0"
+    "preact-compat": "^3.19.0",
+    "zustand": "^3.5.4"
   },
   "devDependencies": {
     "@prefresh/snowpack": "^3.0.0",

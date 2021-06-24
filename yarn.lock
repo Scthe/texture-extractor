@@ -6604,6 +6604,7 @@ fsevents@~2.1.2:
     prettier: ^2.2.1
     snowpack: ^3.3.7
     typescript: ^4.2.4
+    zustand: ^3.5.4
   languageName: unknown
   linkType: soft
 
@@ -7088,5 +7089,17 @@ typescript@^4.2.4:
   version: 1.2.1
   resolution: "ylru@npm:1.2.1"
   checksum: ce002a8bb58b30a5bcc8bf44a6b04fbee9450f78c29b59380223945714f4c0e38cc7f68d5b1efa8bf6cd22766f23a47698c2fd020bbb63dc55f11d8385d7c34e
+  languageName: node
+  linkType: hard
+
+"zustand@npm:^3.5.4":
+  version: 3.5.4
+  resolution: "zustand@npm:3.5.4"
+  peerDependencies:
+    react: ">=16.8"
+  peerDependenciesMeta:
+    react:
+      optional: true
+  checksum: 0bcc0d15e47dcb503ff51dec3551a15ee1b6521315f820cb805531f4ba4124a61a9b7f7639bb4c8d0ffc5d77f7ff75f057388fee1b69ce087c3fe490a6193521
   languageName: node
   linkType: hard

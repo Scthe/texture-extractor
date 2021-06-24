@@ -2,24 +2,15 @@ import { h, FunctionComponent as FC } from "preact";
 import { useRef } from "preact/hooks";
 import { css } from "@emotion/css";
 import { useDrag } from "../hooks/useDrag";
+import * as s from "../style";
 
-// TODO make invisible big circles as handles instead
+// OR make invisible big circles as handles instead
 const RADIUS = 20;
-
-// TODO different colors - put inside class to manipulate
-const cornerStyle = css`
-  cursor: pointer;
-  transition: fill 0.5s;
-  stroke-width: 0;
-  &:hover {
-    fill: #287445; // TODO or https://developer.mozilla.org/en-US/docs/Web/SVG/Element/linearGradient ?
-    stroke: #57b87c;
-  }
-`;
 
 interface Props {
   idx: number;
   point: Point2d;
+  color: string;
   maxRadius: number;
   scaleIndependent: (v: number) => number;
   onDrag: (pointIdx: number, dt: Point2d) => void;
@@ -29,6 +20,7 @@ interface Props {
 export const RectCornerSvg: FC<Props> = ({
   idx,
   point,
+  color,
   scaleIndependent,
   maxRadius,
   onDrag,
@@ -44,16 +36,25 @@ export const RectCornerSvg: FC<Props> = ({
 
   const radius = Math.min(scaleIndependent(RADIUS), maxRadius - 2);
 
+  const cornerStyle = css`
+    cursor: pointer;
+    transition: fill ${s.ANIMATION.fast};
+    stroke-width: ${radius / 6};
+    stroke: ${color};
+    &:hover {
+      fill: transparent;
+    }
+  `;
+
   return (
     <ellipse
       cx={point.x}
       cy={point.y}
       rx={radius}
       ry={radius}
-      fill="#57b87c"
+      fill={`${color}`}
       ref={svgElRef}
       class={cornerStyle}
-      style={`stroke-width: ${radius / 6}`}
     />
   );
 };
