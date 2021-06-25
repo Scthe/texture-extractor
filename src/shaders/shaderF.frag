@@ -3,7 +3,8 @@ precision highp float;
 precision highp int;
 precision highp usampler2D;
 
-uniform usampler2D u_image;
+// uniform usampler2D u_image;
+uniform sampler2D u_image;
 
 // in vec2 v_position;
 in vec2 v_uv;
@@ -28,8 +29,14 @@ vec3 readModelTexture_RGB8UI(usampler2D tex, vec2 coords) {
   return vec3(texAsUint) / 255.0;
 }
 
+vec3 readModelTexture_RGB8(sampler2D tex, vec2 coords) {
+  // coords = fixOpenGLTextureCoords_AxisY(coords);
+  return texture(tex, coords).rgb;
+}
+
 void main() {
-  vec3 result = readModelTexture_RGB8UI(u_image, v_uv);
+  // vec3 result = readModelTexture_RGB8UI(u_image, v_uv);
+  vec3 result = readModelTexture_RGB8(u_image, v_uv);
   color1 = vec4(result, 1.0f);
   // color1 = vec4(getPlaneDebugColor(), 1.0f);
 }

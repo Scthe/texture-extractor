@@ -7,6 +7,7 @@ import { ScreenName } from "../../components/ScreenName";
 import { SettingsOpenButton } from "../../components/SettingsOpenButton";
 import { usePinchScaleChange } from "../../hooks/usePinchScaleChange";
 import { useBoolState } from "../../hooks/useBoolState";
+import { useSettingsOpenState } from "../../hooks/useSettingsOpenState";
 import { useAutoZoomPinchZoom } from "../../hooks/useAutoZoomPinchZoom";
 import { useAppStatePartial } from "../../state/AppState";
 import * as s from "../../style";
@@ -24,7 +25,7 @@ export const ImageScreen: FC<Props> = ({ onDragEnd, onDragging }) => {
     "borderSafeSpace",
   );
 
-  const [isSettingsOpen, setSettingsOpen] = useBoolState(false);
+  const [isSettingsOpen, setSettingsOpen] = useSettingsOpenState();
   const [isDimed, setIsDimed] = useBoolState(true);
   const [zoom, onPinchZoomChange] = usePinchScaleChange();
 

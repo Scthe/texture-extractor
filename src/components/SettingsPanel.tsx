@@ -1,19 +1,42 @@
 import { h, FunctionComponent as FC } from "preact";
+import { useCallback } from "preact/hooks";
 import { css, cx } from "@emotion/css";
+
 import * as s from "../style";
+import { Icon } from "./Icon";
 
 interface Props {
   isOpen: boolean;
   setSettingsOpen: (nextOpen: boolean) => void;
+  title: string;
+  theme: s.AppTheme;
 }
 
-// TODO add slide animation (if not reduced motion media query)
+const titleText = css`
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: 16px;
+  font-weight: normal;
+`;
+const hideIcon = css`
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: ${s.spacing(0, 1, 0, 2)};
+  cursor: pointer;
+`;
 
 export const SettingsPanel: FC<Props> = ({
   isOpen,
   setSettingsOpen,
+  title,
+  theme,
   children,
 }) => {
+  const hideSettings = useCallback(
+    () => setSettingsOpen(false),
+    [setSettingsOpen],
+  );
+
   const container = css`
     position: absolute;
     bottom: 0;
@@ -22,12 +45,30 @@ export const SettingsPanel: FC<Props> = ({
     border-top-left-radius: ${s.borderRadius("m")};
     width: 240px;
   `;
+  const header = css`
+    background-color: ${theme.primary};
+    border-top-left-radius: ${s.borderRadius("m")};
+    width: 100%;
+    height: 32px;
+    padding: ${s.spacing(3, 4)};
+  `;
 
-  // TODO how to hide this panel?
-  // const handler = () => setSettingsOpen(false);
   if (!isOpen) {
     return null;
   }
 
-  return <div class={cx(container)}>{children}</div>;
+  return (
+    <div class={cx(container)}>
+      <div class={cx(s.flexSides, s.flexAltCenter, header)}>
+        <h2 class={cx(s.textWhite, titleText)}>{title}</h2>
+        <Icon
+          name="expand_more"
+          className={cx(s.textWhite, s.activableHover, hideIcon)}
+          onClick={hideSettings}
+        />
+      </div>
+
+      {children}
+    </div>
+  );
 };

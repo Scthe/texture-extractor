@@ -55,6 +55,12 @@ export const flexAltCenter = css`
   align-items: center;
 `;
 
+export const ellipsis = css`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
 export const appColumnStyle = css`
   flex-grow: 1;
   flex-shrink: 1;

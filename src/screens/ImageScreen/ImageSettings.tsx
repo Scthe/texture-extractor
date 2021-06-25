@@ -26,7 +26,12 @@ export const ImageSettings: FC<Props> = ({
   const { setImage } = useAppStatePartial("setImage");
 
   return (
-    <SettingsPanel isOpen={isOpen || true} setSettingsOpen={setSettingsOpen}>
+    <SettingsPanel
+      theme={theme}
+      title="Input settings"
+      isOpen={isOpen}
+      setSettingsOpen={setSettingsOpen}
+    >
       <SettingsSection className={s.flexCenter}>
         <Button
           theme={theme}

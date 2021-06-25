@@ -23,7 +23,18 @@ const modal = css`
   overflow: hidden;
 `;
 
-const header = css``;
+const header = css`
+  color: #464646;
+  font-size: 36px;
+`;
+
+const githubLink = css`
+  color: ${s.COLORS.greyDark};
+  font-size: 18px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+`;
 
 const uploadImage = css`
   padding: ${s.spacing(8)} 0;
@@ -188,10 +199,14 @@ export const WelcomeModal: FC<unknown> = () => {
             onChange={handleFileChange}
           />
 
-          {/* TODO this looks lame */}
+          {/* TODO tooltips */}
+          {/* TODO this looks lame. Or 'Image Cutter'? */}
           <h1 class={cx(s.textCenter, s.noMargins, header)}>
             Texture extractor
           </h1>
+
+          {/* TODO icon 26x26, make it a link */}
+          <div class={githubLink}>Source on GitHub</div>
 
           <section class={cx(s.flexCenter, uploadImage)}>
             <div

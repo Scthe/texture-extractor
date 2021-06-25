@@ -16,7 +16,7 @@ import { ZoomNumber } from "../../components/ZoomNumber";
 import { ScreenName } from "../../components/ScreenName";
 import { SettingsOpenButton } from "../../components/SettingsOpenButton";
 import { usePinchScaleChange } from "../../hooks/usePinchScaleChange";
-import { useBoolState } from "../../hooks/useBoolState";
+import { useSettingsOpenState } from "../../hooks/useSettingsOpenState";
 import { useAutoZoomPinchZoom } from "../../hooks/useAutoZoomPinchZoom";
 import { useAppStatePartial } from "../../state/AppState";
 import * as s from "../../style";
@@ -28,6 +28,26 @@ export type RefrawWebGlRef = { redrawWebGl: RedrawWebGl };
 const CHECKER_COLOR_1 = hexAsSvgColor(s.COLORS.greyDark);
 const CHECKER_COLOR_2 = hexAsSvgColor(s.COLORS.greyMid);
 
+interface RedrawParams {
+  ctx: GlContext | null;
+  borderSafeSpace: number;
+  rect: Rect;
+  renderSmooth: boolean;
+}
+const redrawUVview = ({
+  ctx,
+  borderSafeSpace,
+  rect,
+  renderSmooth,
+}: RedrawParams) => {
+  if (rect != null && ctx != null) {
+    const rectNoPadding = rect.map((p) =>
+      sub2d(p, { x: borderSafeSpace, y: borderSafeSpace }),
+    ) as Rect;
+    redraw(ctx, rectNoPadding, renderSmooth);
+  }
+};
+
 const container = css`
   border-right: 4px solid ${s.ThemeTeal.primary};
   background: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 2"><rect width="2" height="2" fill="${CHECKER_COLOR_1}"/><path d="M1 2V0h1v1H0v1z" fill="${CHECKER_COLOR_2}"/></svg>');
@@ -37,29 +57,39 @@ const container = css`
 
 export const UVscreen: FC<unknown> = forwardRef(
   (_, ref: Ref<RefrawWebGlRef>) => {
-    const { image, borderSafeSpace, rectangles, soften } = useAppStatePartial(
-      "borderSafeSpace",
-      "image",
-      "rectangles",
-      "soften",
-    );
+    const { image, borderSafeSpace, rectangles, renderSmooth } =
+      useAppStatePartial(
+        "borderSafeSpace",
+        "image",
+        "rectangles",
+        "renderSmooth",
+      );
     const canvasRef = useRef<HTMLCanvasElement>();
     const glContextRef = useRef<GlContext | null>();
-    const [isSettingsOpen, setSettingsOpen] = useBoolState(false);
+    const [isSettingsOpen, setSettingsOpen] = useSettingsOpenState();
+
+    const uvStateRef = useLatest({
+      borderSafeSpace,
+      rectangles,
+      renderSmooth,
+    });
 
     const redrawUVviewRef = useLatest<RedrawWebGl>((rect: Rect | undefined) => {
-      rect = rect != null ? rect : rectangles[0]?.points;
-      if (rect != null && glContextRef.current != null) {
-        const rectNoPadding = rect.map((p) =>
-          sub2d(p, { x: borderSafeSpace, y: borderSafeSpace }),
-        ) as Rect;
-        redraw(glContextRef.current, rectNoPadding);
-      }
+      rect = rect != null ? rect : uvStateRef.current.rectangles[0]?.points;
+      redrawUVview({
+        ...uvStateRef.current,
+        ctx: glContextRef.current,
+        rect,
+      });
     });
 
     useImperativeHandle(ref, () => ({
       redrawWebGl: (rect: Rect | undefined) => redrawUVviewRef.current(rect),
     }));
+
+    useEffect(() => {
+      redrawUVviewRef.current(undefined);
+    }, [redrawUVviewRef, renderSmooth]);
 
     useEffect(() => {
       if (canvasRef.current == null || image == null) {

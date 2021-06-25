@@ -86,3 +86,13 @@ export const createTextureOpts = (base: Partial<TextureOpts>): TextureOpts => ({
   ...DEFAULT_TEXTURE_OPTS,
   ...base,
 });
+
+export type SamplerOpts = Pick<
+  TextureOpts,
+  "lodMin" | "lodMax" | "filterMin" | "filterMag" | "wrap"
+>;
+
+export const createSamplerOpts = (base: Partial<SamplerOpts>): SamplerOpts => ({
+  ...DEFAULT_TEXTURE_OPTS,
+  ...base,
+});

@@ -68,7 +68,7 @@ export const Checkbox: FC<Props> = ({
 
 export const CheckboxLabel: FC<{ id: string }> = ({ id, children }) => {
   return (
-    <label for={id} style="cursor: pointer">
+    <label for={id} style="cursor: pointer; flex-grow: 1">
       {children}
     </label>
   );

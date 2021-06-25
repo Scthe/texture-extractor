@@ -4,8 +4,8 @@ import { SettingsPanel } from "../../components/SettingsPanel";
 import { SettingsSection } from "../../components/SettingsSection";
 import { Button } from "../../components/Button";
 import { Checkbox, CheckboxLabel } from "../../components/Checkbox";
+import { useAppStatePartial } from "../../state/AppState";
 import * as s from "../../style";
-import { useBoolState } from "../../hooks/useBoolState";
 
 interface Props {
   theme: s.AppTheme;
@@ -15,10 +15,18 @@ interface Props {
 // TODO donwload all, or ziped separate
 
 export const UvSettings: FC<Props> = ({ theme, isOpen, setSettingsOpen }) => {
-  const [isSoften, setSoften] = useBoolState(false);
+  const { renderSmooth, setRenderSmooth } = useAppStatePartial(
+    "renderSmooth",
+    "setRenderSmooth",
+  );
 
   return (
-    <SettingsPanel isOpen={isOpen || true} setSettingsOpen={setSettingsOpen}>
+    <SettingsPanel
+      theme={theme}
+      title="Output settings"
+      isOpen={isOpen}
+      setSettingsOpen={setSettingsOpen}
+    >
       <SettingsSection className={s.flexCenter}>
         <Button
           theme={theme}
@@ -30,12 +38,12 @@ export const UvSettings: FC<Props> = ({ theme, isOpen, setSettingsOpen }) => {
       </SettingsSection>
 
       <SettingsSection className={cx(s.flexSides, s.flexAltCenter)}>
-        <CheckboxLabel id="uv-soften-checkbox">Soften</CheckboxLabel>
+        <CheckboxLabel id="uv-soften-checkbox">Smooth</CheckboxLabel>
         <Checkbox
           id="uv-soften-checkbox"
           theme={theme}
-          checked={isSoften}
-          onChecked={setSoften}
+          checked={renderSmooth}
+          onChecked={setRenderSmooth}
         />
       </SettingsSection>
     </SettingsPanel>

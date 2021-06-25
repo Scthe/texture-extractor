@@ -10,14 +10,14 @@ interface AppState {
   rectangles: SelectionRect[];
   borderSafeSpace: number;
   image: AppImageData | null;
-  soften: boolean;
+  renderSmooth: boolean;
 
   // setters:
   setImage: (image: AppImageData | null) => void;
   addRectangle: () => void;
   removeRectangle: (id: number) => void;
   moveRectangle: (id: number, points: Rect) => void;
-  setSoften: (nextValue: boolean) => void;
+  setRenderSmooth: (nextValue: boolean) => void;
 }
 
 const _DEBUGcreateRectangle = (
@@ -74,8 +74,8 @@ const removeRectangle = (
     id !== state.selectedRectangleId
       ? state.selectedRectangleId
       : rectangles.length > 0
-        ? rectangles[0].id
-        : SELECTED_NONE;
+      ? rectangles[0].id
+      : SELECTED_NONE;
   return { rectangles, selectedRectangleId };
 };
 
@@ -85,7 +85,7 @@ export const useAppState = create<AppState>((set) => ({
   rectangles: [],
   borderSafeSpace: 20,
   image: null,
-  soften: false,
+  renderSmooth: false,
 
   // setters:
   setImage: (image: AppImageData | null) =>
@@ -97,12 +97,12 @@ export const useAppState = create<AppState>((set) => ({
         image == null
           ? []
           : [
-            createRectangle(0, image, state.borderSafeSpace),
-            // _DEBUGcreateRectangle(100, image, state.borderSafeSpace), // debug only
-            // _DEBUGcreateRectangle(101, image, state.borderSafeSpace),
-            // _DEBUGcreateRectangle(102, image, state.borderSafeSpace),
-            // _DEBUGcreateRectangle(103, image, state.borderSafeSpace),
-          ],
+              createRectangle(0, image, state.borderSafeSpace),
+              // _DEBUGcreateRectangle(100, image, state.borderSafeSpace), // debug only
+              // _DEBUGcreateRectangle(101, image, state.borderSafeSpace),
+              // _DEBUGcreateRectangle(102, image, state.borderSafeSpace),
+              // _DEBUGcreateRectangle(103, image, state.borderSafeSpace),
+            ],
       image,
     })),
   addRectangle: () =>
@@ -114,13 +114,13 @@ export const useAppState = create<AppState>((set) => ({
         state.image == null
           ? []
           : [
-            ...state.rectangles,
-            createRectangle(
-              state._nextRectangleId,
-              state.image,
-              state.borderSafeSpace,
-            ),
-          ],
+              ...state.rectangles,
+              createRectangle(
+                state._nextRectangleId,
+                state.image,
+                state.borderSafeSpace,
+              ),
+            ],
     })),
   removeRectangle: (id: number) =>
     set((state) => ({
@@ -135,10 +135,10 @@ export const useAppState = create<AppState>((set) => ({
         r.id === id ? { ...r, points } : r,
       ),
     })),
-  setSoften: (nextValue: boolean) =>
+  setRenderSmooth: (nextValue: boolean) =>
     set((state) => ({
       ...state,
-      soften: nextValue,
+      renderSmooth: nextValue,
     })),
 }));
 

@@ -6,21 +6,27 @@ import shaderVert from "./shaders/shaderV.vert";
 import shaderFrag from "./shaders/shaderF.frag";
 import { Texture, TextureType } from "./gl-utils/texture/Texture";
 import {
+  createSamplerOpts,
   createTextureOpts,
   TextureFilterMag,
   TextureFilterMin,
 } from "./gl-utils/texture/TextureOpts";
+import { Sampler } from "./gl-utils/texture/Sampler";
 import { clamp } from "./utils";
 
 export interface GlContext {
   gl: Webgl;
   shader: Shader;
   imageTexture: Texture;
+  samplerLinear: Sampler;
+  samplerNearest: Sampler;
 }
 
 export const destroyGlContext = (ctx: GlContext): void => {
   ctx.shader.destroy(ctx.gl);
   ctx.imageTexture.destroy(ctx.gl);
+  ctx.samplerNearest.destroy(ctx.gl);
+  ctx.samplerLinear.destroy(ctx.gl);
 };
 
 const applyDrawPrams = (gl: Webgl) => {
@@ -44,7 +50,7 @@ const loadTexture = (
     0,
     sizedPixelFormat,
     createTextureOpts({
-      filterMin: TextureFilterMin.Nearest, // TODO or?
+      filterMin: TextureFilterMin.Nearest,
       filterMag: TextureFilterMag.Nearest,
     }),
   );
@@ -54,7 +60,7 @@ const loadTexture = (
     dimensions: texture.dimensions,
   };
   const writeSource = {
-    unsizedPixelFormat: gl.RGB_INTEGER,
+    unsizedPixelFormat: gl.RGBA,
     perChannelType: gl.UNSIGNED_BYTE,
     data: imageData,
   };
@@ -85,9 +91,29 @@ export const initializeGlView = (
   const shader = new Shader(gl, shaderVert, shaderFrag);
   shader.use(gl);
 
-  const imageTexture = loadTexture(gl, imageData, gl.RGB8UI);
+  // we need something filterable (for linear sampler)
+  // https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texImage2D
+  // And supported by UNSIGNED_BYTE/Uint8ClampedArray that is inside ImageData
+  // https://www.khronos.org/registry/webgl/specs/latest/2.0/#3.7.6
+  // SOLUTION: internal=RGBA8, (format=RGBA type=UNSIGNED_BYTE)
+  const imageTexture = loadTexture(gl, imageData, gl.RGBA8);
 
-  return { gl, shader, imageTexture };
+  const samplerLinear = new Sampler(
+    gl,
+    createSamplerOpts({
+      filterMin: TextureFilterMin.Linear,
+      filterMag: TextureFilterMag.Linear,
+    }),
+  );
+  const samplerNearest = new Sampler(
+    gl,
+    createSamplerOpts({
+      filterMin: TextureFilterMin.Nearest,
+      filterMag: TextureFilterMag.Nearest,
+    }),
+  );
+
+  return { gl, shader, imageTexture, samplerLinear, samplerNearest };
 };
 
 const renderFullscreenQuad = ({ gl }: GlContext): void => {
@@ -105,8 +131,10 @@ const getRectDimensions = (rect: Rect): [number, number] => {
   return [(w1 + w2) / 2, (h1 + h2) / 2];
 };
 
-export const redraw = (ctx: GlContext, rect: Rect): void => {
+export const redraw = (ctx: GlContext, rect: Rect, isSmooth: boolean): void => {
   const { gl, shader, imageTexture } = ctx;
+  const sampler = isSmooth ? ctx.samplerLinear : ctx.samplerNearest;
+  sampler.bindAsActive(gl);
 
   // clear
   gl.viewport(0, 0, imageTexture.width, imageTexture.height);

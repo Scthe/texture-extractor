@@ -39,7 +39,6 @@ function App(): h.JSX.Element {
   const redrawWebglRef = useRef<RefrawWebGlRef>();
   const moveRectangleRef = useLatest(moveRectangle);
 
-  // redrawUVview.current(newState); // TODO error
   const onDragging = useCallback((id: number, rect: Rect) => {
     if (redrawWebglRef.current) {
       redrawWebglRef.current.redrawWebGl(rect);

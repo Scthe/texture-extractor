@@ -242,8 +242,7 @@ export class Texture {
     return depthFormats.includes(this.sizedPixelFormat);
   }
 
-  bindAsActive(gl: Webgl): void {
-    const bindIdx = 0;
+  bindAsActive(gl: Webgl, bindIdx = 0): void {
     gl.activeTexture(gl.TEXTURE0 + bindIdx);
     gl.bindTexture(this.type, this.glId);
   }
