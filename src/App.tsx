@@ -1,5 +1,5 @@
 import { h } from "preact";
-import { useCallback, useRef } from "preact/hooks";
+import { useCallback, useEffect, useRef } from "preact/hooks";
 import { createPortal } from "preact/compat";
 import { css } from "@emotion/css";
 import "pinch-zoom-element";
@@ -25,9 +25,7 @@ interface FileDropAttributes extends preact.JSX.HTMLAttributes<HTMLElement> {
   onfiledrop?: (e: FileDropEvent) => void;
 }
 
-// TODO add example images to repo, with example rectangles
-
-const modalContainer = document.getElementById("modals")!;
+export const modalContainer = document.getElementById("modals")!;
 
 const containterStyle = css`
   display: flex;
@@ -35,9 +33,14 @@ const containterStyle = css`
 `;
 
 function App(): h.JSX.Element {
-  const { moveRectangle } = useAppState();
+  const { moveRectangle, image } = useAppState();
   const redrawWebglRef = useRef<RefrawWebGlRef>();
   const moveRectangleRef = useLatest(moveRectangle);
+
+  useEffect(() => {
+    const filename = image?.filename || "";
+    document.title = filename.length > 0 ? filename : "Texture Extractor";
+  }, [image]);
 
   const onDragging = useCallback((id: number, rect: Rect) => {
     if (redrawWebglRef.current) {

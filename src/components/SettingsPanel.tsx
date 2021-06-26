@@ -44,6 +44,7 @@ export const SettingsPanel: FC<Props> = ({
     background-color: ${s.COLORS.white};
     border-top-left-radius: ${s.borderRadius("m")};
     width: 240px;
+    max-width: 100%;
   `;
   const header = css`
     background-color: ${theme.primary};
@@ -63,6 +64,7 @@ export const SettingsPanel: FC<Props> = ({
         <h2 class={cx(s.textWhite, titleText)}>{title}</h2>
         <Icon
           name="expand_more"
+          title="Hide settings panel"
           className={cx(s.textWhite, s.activableHover, hideIcon)}
           onClick={hideSettings}
         />

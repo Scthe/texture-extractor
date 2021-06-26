@@ -29,17 +29,19 @@ interface Props {
 export const ImageAvatar: FC<Props> = ({ imageData, setImage }) => {
   return (
     <li class={container}>
-      <button class={s.invisibleBtn} onClick={() => setImage(imageData)}>
-        <div>
-          <div class={imageWrapper}>
-            <img
-              src={imageData.thumbUrl}
-              alt={`Example image - ${imageData.name}`}
-              class={cx(image, s.size("100px"))}
-            />
-          </div>
-          <div class={cx(s.textWhite, name)}>{imageData.name}</div>
+      <button
+        title={imageData.tooltip}
+        class={cx(s.invisibleBtn, s.activableHover)}
+        onClick={() => setImage(imageData)}
+      >
+        <div class={imageWrapper}>
+          <img
+            src={imageData.thumbUrl}
+            alt={`Example image - ${imageData.name}`}
+            class={cx(image, s.size("100px"))}
+          />
         </div>
+        <div class={cx(s.textWhite, name)}>{imageData.name}</div>
       </button>
     </li>
   );

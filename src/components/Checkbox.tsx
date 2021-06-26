@@ -24,6 +24,7 @@ const iconClass = css`
 
 interface Props {
   id: string;
+  title?: string;
   theme: s.AppTheme;
   className?: string;
   checked: boolean;
@@ -32,6 +33,7 @@ interface Props {
 
 export const Checkbox: FC<Props> = ({
   id,
+  title,
   theme,
   className,
   onChecked,
@@ -52,6 +54,7 @@ export const Checkbox: FC<Props> = ({
     <div
       className={cx(className, baseClass, checked && checkedClass)}
       onClick={handler}
+      title={title}
     >
       {checked ? (
         <Icon name="check" className={cx(s.textWhite, iconClass)} />
@@ -66,9 +69,13 @@ export const Checkbox: FC<Props> = ({
   );
 };
 
-export const CheckboxLabel: FC<{ id: string }> = ({ id, children }) => {
+export const CheckboxLabel: FC<{ id: string; title?: string }> = ({
+  id,
+  title,
+  children,
+}) => {
   return (
-    <label for={id} style="cursor: pointer; flex-grow: 1">
+    <label for={id} style="cursor: pointer; flex-grow: 1" title={title}>
       {children}
     </label>
   );

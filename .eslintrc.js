@@ -44,7 +44,7 @@ module.exports = {
       },
     ],
     "import/no-duplicates": "off", // default eslint is good enough?
-    "import/no-unused-modules": ["error", { unusedExports: true }],
+    "import/no-unused-modules": ["warn", { unusedExports: true }],
     "@typescript-eslint/no-unused-vars": [
       "error",
       {

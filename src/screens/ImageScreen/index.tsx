@@ -14,6 +14,11 @@ import * as s from "../../style";
 import { ImageSettings } from "./ImageSettings";
 import { ImageWorkspace } from "./ImageWorkspace";
 
+const HELP_TEXT = [
+  "Use Texture Extractor to map parts of input image (right side of the screen) to rectangles (left side of the screen).",
+  "Each selected area is defined by 4 corners. Drag the corners to change shape of currently selected area. You can extract many parts of an image at the same time using multiple selections. Use settings panel in bottom right corner to manage selections.",
+];
+
 interface Props {
   onDragging: RectMoveCb;
   onDragEnd: RectMoveCb;
@@ -53,7 +58,11 @@ export const ImageScreen: FC<Props> = ({ onDragEnd, onDragging }) => {
       </pinch-zoom>
 
       <ZoomNumber theme={s.ThemePurple} zoom={zoom} />
-      <ScreenName theme={s.ThemePurple} name="Input Image" />
+      <ScreenName
+        theme={s.ThemePurple}
+        name="Input Image"
+        helpText={HELP_TEXT}
+      />
       <SettingsOpenButton
         theme={s.ThemePurple}
         setSettingsOpen={setSettingsOpen}

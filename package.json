@@ -1,9 +1,11 @@
 {
-  "name": "texture-extractor-web",
+  "name": "texture-extractor",
   "version": "1.0.0",
-  "description": "",
+  "description": "Cut parts of an image into perfect rectangles",
   "author": "Marcin Matuszczyk (Scthe)",
-  "main": "src/index.ts",
+  "homepage": "https://scthe.github.io/texture-extractor",
+  "repository": "github:Scthe/texture-extractor",
+  "main": "src/index.tsx",
   "license": "MIT",
   "browserslist": "last 2 versions",
   "scripts": {

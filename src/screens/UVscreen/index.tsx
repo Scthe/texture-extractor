@@ -28,6 +28,12 @@ export type RefrawWebGlRef = { redrawWebGl: RedrawWebGl };
 const CHECKER_COLOR_1 = hexAsSvgColor(s.COLORS.greyDark);
 const CHECKER_COLOR_2 = hexAsSvgColor(s.COLORS.greyMid);
 
+const HELP_TEXT = [
+  "Use Texture Extractor to map parts of input image (right side of the screen) to rectangles (left side of the screen).",
+  "Use the Extracted Texture view to preview the selected area content. This view contains image generated from input image based on active selection. Live updates provide feedback during changes.",
+  "Use settings panel in bottom right corner of this view to save the result as a file.",
+];
+
 interface RedrawParams {
   ctx: GlContext | null;
   borderSafeSpace: number;
@@ -132,7 +138,11 @@ export const UVscreen: FC<unknown> = forwardRef(
         </pinch-zoom>
 
         <ZoomNumber theme={s.ThemeTeal} zoom={zoom} />
-        <ScreenName theme={s.ThemeTeal} name="Extracted Texture" />
+        <ScreenName
+          theme={s.ThemeTeal}
+          name="Extracted Texture"
+          helpText={HELP_TEXT}
+        />
         <SettingsOpenButton
           theme={s.ThemeTeal}
           setSettingsOpen={setSettingsOpen}

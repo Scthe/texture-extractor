@@ -13,6 +13,7 @@ export interface ExampleImage {
   name: string;
   url: string;
   thumbUrl: string;
+  tooltip: string;
 }
 
 export const EXAMPLE_IMAGES: ExampleImage[] = [
@@ -20,15 +21,18 @@ export const EXAMPLE_IMAGES: ExampleImage[] = [
     name: "Architecture",
     url: exampleArch,
     thumbUrl: exampleArch,
+    tooltip: "Extract perspective-corrected architectural details",
   },
   {
     name: "Clothes",
     url: exampleFashion,
     thumbUrl: exampleFashion,
+    tooltip: "Get pattern details, not matter distortions or shape",
   },
   {
     name: "3d modeling",
     url: exampleCG,
     thumbUrl: exampleCG,
+    tooltip: "Cut fragments of images to use in your own work",
   },
 ];

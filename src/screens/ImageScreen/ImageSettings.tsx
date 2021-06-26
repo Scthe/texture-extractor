@@ -28,7 +28,7 @@ export const ImageSettings: FC<Props> = ({
   return (
     <SettingsPanel
       theme={theme}
-      title="Input settings"
+      title="Input Settings"
       isOpen={isOpen}
       setSettingsOpen={setSettingsOpen}
     >
@@ -36,6 +36,7 @@ export const ImageSettings: FC<Props> = ({
         <Button
           theme={theme}
           icon="close"
+          title="Close current image and start with a new one"
           onClick={() => {
             setImage(null);
           }}
@@ -46,13 +47,21 @@ export const ImageSettings: FC<Props> = ({
 
       {/* TODO Rectangle selection
       <SettingsSection className={cx(s.flexSides, s.flexAltCenter)}>
+        <Button>Add new selection</Button>
+        <ul> (shows only 4.5lines) </ul>
       </SettingsSection>
        */}
 
       <SettingsSection className={cx(s.flexSides, s.flexAltCenter)}>
-        <CheckboxLabel id="image-dim-checkbox">Dim</CheckboxLabel>
+        <CheckboxLabel
+          id="image-dim-checkbox"
+          title="Shade the image for easier selection"
+        >
+          Dim
+        </CheckboxLabel>
         <Checkbox
           id="image-dim-checkbox"
+          title="Shade the image for easier selection"
           theme={theme}
           checked={isDimed}
           onChecked={setIsDimed}

@@ -83,7 +83,8 @@ interface SelectionRect {
 
 interface AppImageData {
   data: ImageData;
-  exampleName: string | undefined;
+  isExample: boolean;
+  filename: string;
 }
 
 type RectMoveCb = (id: number, rect: Rect) => void;

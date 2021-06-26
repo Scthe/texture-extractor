@@ -74,7 +74,7 @@ export const COLORS = {
   themeTeal: "#13A3BB",
   themePurple: "#CB1482",
 
-  white: "white", // TODO make it off-white, like opening modal
+  white: "white",
   dirtyWhite: "#EAEAEA",
   greyLight: "#B2B2B2",
   greyMid: "#858585",
@@ -110,6 +110,7 @@ export const borderRadius = (size: "s" | "m" | "l"): string =>
   size === "s" ? "4px" : size === "m" ? "8px" : "50px";
 
 export const activableHover = css`
+  cursor: pointer;
   transition: opacity ${ANIMATION.fast};
   &:hover {
     opacity: 0.6;
@@ -129,6 +130,21 @@ export const invisibleBtn = css`
 export const offScreen = css`
   position: absolute;
   left: -9999px;
+`;
+
+export const modalDimmer = cx(
+  fillAbsolute,
+  css`
+    background-color: rgba(0, 0, 0, 0.5);
+  `,
+);
+
+export const modal = css`
+  margin: 50px auto 0;
+  border-radius: ${borderRadius("m")};
+  background-color: ${COLORS.dirtyWhite};
+  overflow: hidden;
+  position: relative;
 `;
 
 export const pinchZoomStyle = cx(relative, wh100);

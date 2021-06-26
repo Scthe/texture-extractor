@@ -26,6 +26,12 @@ body {
   overflow-y: hidden;
   color: #121212;
 }
+@media (max-width: 800px) {
+  /* Allow to scroll down to hide address bar*/
+  body {
+    overflow-y: scroll;
+  }
+}
 
 * {
   box-sizing: border-box;

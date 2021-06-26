@@ -20,6 +20,16 @@ interface AppState {
   setRenderSmooth: (nextValue: boolean) => void;
 }
 
+// there is some nicer Pick<>, but too lazy ATM
+type StateSetter<
+  T extends
+    | "setImage"
+    | "addRectangle"
+    | "removeRectangle"
+    | "moveRectangle"
+    | "setRenderSmooth",
+> = (state: AppState, ...params: Parameters<AppState[T]>) => AppState;
+
 const _DEBUGcreateRectangle = (
   id: number,
   imageData: AppImageData,
@@ -65,18 +75,82 @@ const createRectangle = (
   };
 };
 
-const removeRectangle = (
+// Better checking for misspelled properties
+function check<T extends AppState, U extends Record<keyof AppState, unknown>>(
+  t: T & U,
+) {
+  return t;
+}
+
+const setImage: StateSetter<"setImage"> = (state, image) => {
+  const rectangles =
+    image == null
+      ? []
+      : [
+          createRectangle(0, image, state.borderSafeSpace),
+          // _DEBUGcreateRectangle(100, image, state.borderSafeSpace), // debug only
+          // _DEBUGcreateRectangle(101, image, state.borderSafeSpace),
+          // _DEBUGcreateRectangle(102, image, state.borderSafeSpace),
+          // _DEBUGcreateRectangle(103, image, state.borderSafeSpace),
+        ];
+  return check({
+    ...state,
+    _nextRectangleId: 1,
+    selectedRectangleId: 0,
+    rectangles,
+    image,
+  });
+};
+
+const addRectangle: StateSetter<"addRectangle"> = (state) => {
+  const rectangles =
+    state.image == null
+      ? []
+      : [
+          ...state.rectangles,
+          createRectangle(
+            state._nextRectangleId,
+            state.image,
+            state.borderSafeSpace,
+          ),
+        ];
+  return check({
+    ...state,
+    _nextRectangleId: state._nextRectangleId + 1,
+    selectedRectangleId: state._nextRectangleId,
+    rectangles,
+  });
+};
+
+const removeRectangle: StateSetter<"removeRectangle"> = (
   state: AppState,
   id: number,
-): Pick<AppState, "selectedRectangleId" | "rectangles"> => {
+) => {
+  if (state.rectangles.length === 1) {
+    return state;
+  }
   const rectangles = state.rectangles.filter((r) => r.id !== id);
   const selectedRectangleId =
-    id !== state.selectedRectangleId
-      ? state.selectedRectangleId
-      : rectangles.length > 0
+    id === state.selectedRectangleId
       ? rectangles[0].id
-      : SELECTED_NONE;
-  return { rectangles, selectedRectangleId };
+      : state.selectedRectangleId;
+
+  return check({
+    ...state,
+    rectangles,
+    selectedRectangleId,
+  });
+};
+
+const moveRectangle: StateSetter<"moveRectangle"> = (state, id, points) => {
+  const rectangles = state.rectangles.map((r) =>
+    r.id === id ? { ...r, points } : r,
+  );
+  return check({
+    ...state,
+    selectedRectangleId: id,
+    rectangles,
+  });
 };
 
 export const useAppState = create<AppState>((set) => ({
@@ -89,52 +163,11 @@ export const useAppState = create<AppState>((set) => ({
 
   // setters:
   setImage: (image: AppImageData | null) =>
-    set((state) => ({
-      ...state,
-      _nextRectangleId: 1,
-      selectedRectangleId: 0,
-      rectangles:
-        image == null
-          ? []
-          : [
-              createRectangle(0, image, state.borderSafeSpace),
-              // _DEBUGcreateRectangle(100, image, state.borderSafeSpace), // debug only
-              // _DEBUGcreateRectangle(101, image, state.borderSafeSpace),
-              // _DEBUGcreateRectangle(102, image, state.borderSafeSpace),
-              // _DEBUGcreateRectangle(103, image, state.borderSafeSpace),
-            ],
-      image,
-    })),
-  addRectangle: () =>
-    set((state) => ({
-      ...state,
-      _nextRectangleId: state._nextRectangleId + 1,
-      selectedRectangleId: state._nextRectangleId,
-      rectangles:
-        state.image == null
-          ? []
-          : [
-              ...state.rectangles,
-              createRectangle(
-                state._nextRectangleId,
-                state.image,
-                state.borderSafeSpace,
-              ),
-            ],
-    })),
-  removeRectangle: (id: number) =>
-    set((state) => ({
-      ...state,
-      ...removeRectangle(state, id),
-    })),
+    set((state) => setImage(state, image)),
+  addRectangle: () => set((state) => addRectangle(state)),
+  removeRectangle: (id: number) => set((state) => removeRectangle(state, id)),
   moveRectangle: (id: number, points: Rect) =>
-    set((state) => ({
-      ...state,
-      selectedRectangleId: id,
-      rectangles: state.rectangles.map((r) =>
-        r.id === id ? { ...r, points } : r,
-      ),
-    })),
+    set((state) => moveRectangle(state, id, points)),
   setRenderSmooth: (nextValue: boolean) =>
     set((state) => ({
       ...state,

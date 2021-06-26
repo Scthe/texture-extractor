@@ -10,6 +10,8 @@ interface Props {
   theme: s.AppTheme;
 }
 
+// TODO on hover scale 1.3 with transform-origin bottom-left
+// TODO spin me
 export const SettingsOpenButton: FC<Props> = ({ theme, setSettingsOpen }) => {
   const container = css`
     position: absolute;
@@ -33,7 +35,7 @@ export const SettingsOpenButton: FC<Props> = ({ theme, setSettingsOpen }) => {
   const handler = () => setSettingsOpen(true);
 
   return (
-    <div class={cx(container)} onClick={handler}>
+    <div class={cx(container)} onClick={handler} title="Show settings panel">
       <Icon name="settings" className={cx(s.textWhite, cogIcon)} />
     </div>
   );
