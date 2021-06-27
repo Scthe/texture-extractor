@@ -31,8 +31,8 @@ export const ImageScreen: FC<Props> = ({ onDragEnd, onDragging }) => {
   );
 
   const [isSettingsOpen, setSettingsOpen] = useSettingsOpenState();
-  const [isDimed, setIsDimed] = useBoolState(true);
   const [zoom, onPinchZoomChange] = usePinchScaleChange();
+  const { value: isDimed, setValue: setIsDimed } = useBoolState(true);
 
   // scale initial image view to fill the screen
   const pinchZoomRef = useRef<PinchZoom>();

@@ -1,5 +1,5 @@
 import { h, FunctionComponent as FC } from "preact";
-import { createPortal, useCallback } from "preact/compat";
+import { createPortal } from "preact/compat";
 import { css, cx } from "@emotion/css";
 
 import * as s from "../style";
@@ -45,12 +45,11 @@ interface Props {
 }
 
 export const ScreenName: FC<Props> = ({ name, helpText, theme }) => {
-  const [isHelpOpen, setHelpOpen] = useBoolState(false);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const openModal = useCallback(() => setHelpOpen(true), []);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const closeModal = useCallback(() => setHelpOpen(false), []);
+  const {
+    value: isHelpOpen,
+    setTrue: openModal,
+    setFalse: closeModal,
+  } = useBoolState(false);
 
   return (
     <div

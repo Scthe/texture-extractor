@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { logError } from "../utils/log";
 import GlobalWebGl2Context from "./gimme_gl";
 
 // https://github.com/Microsoft/TypeScript/issues/14733
@@ -80,6 +81,7 @@ export const createWebGl2Context = (
     context = create3DContext(canvas, optAttribs);
     declareExtensions(context, extensions);
   } catch (e) {
+    logError("Error creating WebGL context", e);
     renderCreationError(canvas, e.statusMessage || e);
     throw e;
   }

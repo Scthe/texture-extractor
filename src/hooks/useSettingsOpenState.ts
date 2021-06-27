@@ -5,7 +5,8 @@ import { useBoolState } from "./useBoolState";
 export const useSettingsOpenState = (): [boolean, (v: boolean) => void] => {
   const { image } = useAppStatePartial("image");
 
-  const [isSettingsOpen, setSettingsOpen] = useBoolState(false);
+  const { value: isSettingsOpen, setValue: setSettingsOpen } =
+    useBoolState(false);
 
   useEffect(() => {
     setSettingsOpen(image != null);

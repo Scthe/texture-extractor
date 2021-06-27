@@ -8,8 +8,12 @@ import * as s from "../../style";
 import { Icon } from "../../components/Icon";
 import { decodeImage } from "../../utils/decodeImage";
 import { useAppStatePartial } from "../../state/AppState";
+import { useBoolState } from "../../hooks/useBoolState";
+import { logError, logEvent } from "../../utils/log";
 import { ImageAvatar } from "./ImageAvatar";
 import { ExampleImage, EXAMPLE_IMAGES } from "./exampleImages";
+
+const getFileAnalytics = (f: File) => ({ fileSize: f.size, fileType: f.type });
 
 const modal = css`
   max-width: 600px;
@@ -93,6 +97,35 @@ const imagesGrid = css`
   max-width: 450px;
 `;
 
+const errorBoxContainer = css`
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+`;
+
+const errorBox = css`
+  background-color: ${s.COLORS.error};
+  padding: ${s.spacing(0.5, 4, 1)};
+  border-bottom-left-radius: ${s.borderRadius("m")};
+  border-bottom-right-radius: ${s.borderRadius("m")};
+  transform-origin: top center;
+  animation-duration: ${s.ANIMATION.fast};
+  animation-name: slidein;
+
+  @keyframes slidein {
+    from {
+      transform: scale(0);
+    }
+    75% {
+      transform: scale(1.3);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+`;
+
 const dropStyle = css`
   overflow: hidden;
   touch-action: none;
@@ -125,22 +158,20 @@ const dropStyle = css`
 `;
 
 const getExampleAsFile = async (img: ExampleImage) => {
-  // try {
-  // this.setState({ fetchingDemoIndex: index });
   const blob = await fetch(img.url).then((r) => r.blob());
   const filename = img.url.substring(img.url.lastIndexOf("/") + 1);
   return new File([blob], filename, { type: blob.type });
-  // TODO error handling
-  // this.props.onFile!(file);
-  // } catch (err) {
-  // this.setState({ fetchingDemoIndex: undefined });
-  // this.props.showSnack!("Couldn't fetch demo image");
-  // }
 };
 
 export const WelcomeModal: FC<unknown> = () => {
   const { image, setImage } = useAppStatePartial("image", "setImage");
-  const rectShared = {
+  const {
+    value: hasError,
+    setTrue: showError,
+    setFalse: hideError,
+  } = useBoolState(false);
+
+  const rectSharedProps = {
     class: purpleRect,
     rx: s.borderRadius("m"),
     ry: s.borderRadius("m"),
@@ -156,43 +187,74 @@ export const WelcomeModal: FC<unknown> = () => {
   const startEditorWithFile = useCallback(
     (file: File, exampleImg: ExampleImage | null) => {
       fileInputEl.current && (fileInputEl.current.value = "");
+
       const abortCtrl = new AbortController();
-      decodeImage(abortCtrl.signal, file).then((imageData) => {
-        // TODO error handling
-        setImage({
-          data: imageData,
-          isExample: exampleImg != null,
-          filename: exampleImg != null ? exampleImg.name : file.name,
+      decodeImage(abortCtrl.signal, file)
+        .then((imageData) => {
+          logEvent("image_open", {
+            ...getFileAnalytics(file),
+            exampleImg: exampleImg?.name,
+            width: imageData.width,
+            height: imageData.height,
+          });
+          setImage({
+            data: imageData,
+            isExample: exampleImg != null,
+            filename: exampleImg != null ? exampleImg.name : file.name,
+          });
+        })
+        .catch((e) => {
+          showError();
+          logError("Error decoding image", e, {
+            ...getFileAnalytics(file),
+            exampleImg: exampleImg,
+          });
         });
-      });
     },
-    [setImage],
+    [setImage, showError],
   );
 
   const handleDemoClick = useCallback(
     (img: ExampleImage) => {
-      getExampleAsFile(img).then((f) => startEditorWithFile(f, img));
+      hideError();
+      logEvent("example_picked", { type: img.name });
+
+      getExampleAsFile(img)
+        .then((f) => startEditorWithFile(f, img))
+        .catch((e) => {
+          showError();
+          logError("Example picking error", e, {
+            type: img.name,
+            exampleImg: img,
+          });
+        });
     },
-    [startEditorWithFile],
+    [hideError, showError, startEditorWithFile],
   );
 
   const handleFileChange = useCallback(
     (event: Event): void => {
+      hideError();
       const fileInput = event.target as HTMLInputElement;
       const file = fileInput.files && fileInput.files[0];
       if (!file) return;
+
+      logEvent("file_selected_browser", getFileAnalytics(file));
       startEditorWithFile(file, null);
     },
-    [startEditorWithFile],
+    [hideError, startEditorWithFile],
   );
 
   const handleFileDrop = useCallback(
     ({ files }: FileDropEvent) => {
+      hideError();
       if (!files || files.length === 0) return;
       const file = files[0];
+
+      logEvent("file_selected_drag_and_dropped", getFileAnalytics(file));
       startEditorWithFile(file, null);
     },
-    [startEditorWithFile],
+    [hideError, startEditorWithFile],
   );
 
   if (image != null) {
@@ -220,7 +282,7 @@ export const WelcomeModal: FC<unknown> = () => {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => {
-                // logSimpleEvent("github_outgoing", { to }); // TODO analytics
+                logEvent("github_outgoing");
               }}
             >
               <svg
@@ -249,9 +311,9 @@ export const WelcomeModal: FC<unknown> = () => {
                 preserveAspectRatio="xMidYMid slice"
               >
                 <g transform="translate(-100 0)">
-                  <rect {...rectShared} x="0" y="30" />
-                  <rect {...rectShared} x="85" y="0" />
-                  <rect {...rectShared} x="50" y="55" />
+                  <rect {...rectSharedProps} x="0" y="30" />
+                  <rect {...rectSharedProps} x="85" y="0" />
+                  <rect {...rectSharedProps} x="50" y="55" />
                 </g>
               </svg>
               <div class={cx(s.textWhite, s.textCenter, uploadButtonForm)}>
@@ -278,6 +340,14 @@ export const WelcomeModal: FC<unknown> = () => {
           </section>
         </div>
       </file-drop>
+
+      {hasError && (
+        <div class={errorBoxContainer}>
+          <div class={cx(s.textWhite, s.textCenter, errorBox)}>
+            Could not load the image
+          </div>
+        </div>
+      )}
     </div>
   );
 };

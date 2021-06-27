@@ -1,4 +1,5 @@
 import { useCallback, useState } from "preact/hooks";
+import { logError } from "../utils/log";
 
 export const usePinchScaleChange = (): [number, (e: Event) => void] => {
   const [scale, setScale] = useState(1.0);
@@ -9,6 +10,7 @@ export const usePinchScaleChange = (): [number, (e: Event) => void] => {
       );
       setScale(parseFloat(scale));
     } catch (e) {
+      logError("Pinch-scale listener error", e);
       setScale(1.0);
     }
   }, []);

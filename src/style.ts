@@ -133,6 +133,7 @@ export const COLORS = {
   greyLight: "#B2B2B2",
   greyMid: "#858585",
   greyDark: "#6A6A6A",
+  error: "#BB1313",
 };
 
 export const theme = (theme: AppTheme): string => css`
