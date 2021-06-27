@@ -16,6 +16,7 @@ interface AppState {
   setImage: (image: AppImageData | null) => void;
   addRectangle: () => void;
   removeRectangle: (id: number) => void;
+  selectRectangle: (id: number) => void;
   moveRectangle: (id: number, points: Rect) => void;
   setRenderSmooth: (nextValue: boolean) => void;
 }
@@ -26,6 +27,7 @@ type StateSetter<
     | "setImage"
     | "addRectangle"
     | "removeRectangle"
+    | "selectRectangle"
     | "moveRectangle"
     | "setRenderSmooth",
 > = (state: AppState, ...params: Parameters<AppState[T]>) => AppState;
@@ -88,10 +90,13 @@ const setImage: StateSetter<"setImage"> = (state, image) => {
       ? []
       : [
           createRectangle(0, image, state.borderSafeSpace),
-          // _DEBUGcreateRectangle(100, image, state.borderSafeSpace), // debug only
+          // debug only
+          // _DEBUGcreateRectangle(100, image, state.borderSafeSpace),
           // _DEBUGcreateRectangle(101, image, state.borderSafeSpace),
           // _DEBUGcreateRectangle(102, image, state.borderSafeSpace),
           // _DEBUGcreateRectangle(103, image, state.borderSafeSpace),
+          // _DEBUGcreateRectangle(104, image, state.borderSafeSpace),
+          // _DEBUGcreateRectangle(105, image, state.borderSafeSpace),
         ];
   return check({
     ...state,
@@ -142,6 +147,17 @@ const removeRectangle: StateSetter<"removeRectangle"> = (
   });
 };
 
+const selectRectangle: StateSetter<"selectRectangle"> = (
+  state: AppState,
+  id: number,
+) => {
+  const rect = state.rectangles.find((r) => r.id === id);
+  return check({
+    ...state,
+    selectedRectangleId: rect != null ? id : state.selectedRectangleId,
+  });
+};
+
 const moveRectangle: StateSetter<"moveRectangle"> = (state, id, points) => {
   const rectangles = state.rectangles.map((r) =>
     r.id === id ? { ...r, points } : r,
@@ -166,6 +182,7 @@ export const useAppState = create<AppState>((set) => ({
     set((state) => setImage(state, image)),
   addRectangle: () => set((state) => addRectangle(state)),
   removeRectangle: (id: number) => set((state) => removeRectangle(state, id)),
+  selectRectangle: (id: number) => set((state) => selectRectangle(state, id)),
   moveRectangle: (id: number, points: Rect) =>
     set((state) => moveRectangle(state, id, points)),
   setRenderSmooth: (nextValue: boolean) =>

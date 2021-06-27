@@ -16,7 +16,7 @@ import { ImageWorkspace } from "./ImageWorkspace";
 
 const HELP_TEXT = [
   "Use Texture Extractor to map parts of input image (right side of the screen) to rectangles (left side of the screen).",
-  "Each selected area is defined by 4 corners. Drag the corners to change shape of currently selected area. You can extract many parts of an image at the same time using multiple selections. Use settings panel in bottom right corner to manage selections.",
+  "Each selection area is defined by 4 corners. Drag the corners to change shape of current selection area. You can extract many parts of an image at the same time using multiple selections. Use settings panel in bottom right corner to manage selections.",
 ];
 
 interface Props {
@@ -57,18 +57,14 @@ export const ImageScreen: FC<Props> = ({ onDragEnd, onDragging }) => {
         ) : null}
       </pinch-zoom>
 
-      <ZoomNumber theme={s.ThemePurple} zoom={zoom} />
+      <ZoomNumber zoom={zoom} />
       <ScreenName
         theme={s.ThemePurple}
         name="Input Image"
         helpText={HELP_TEXT}
       />
-      <SettingsOpenButton
-        theme={s.ThemePurple}
-        setSettingsOpen={setSettingsOpen}
-      />
+      <SettingsOpenButton setSettingsOpen={setSettingsOpen} />
       <ImageSettings
-        theme={s.ThemePurple}
         isOpen={isSettingsOpen}
         setSettingsOpen={setSettingsOpen}
         isDimed={isDimed}

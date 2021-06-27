@@ -70,38 +70,7 @@ export const appColumnStyle = css`
   position: relative;
 `;
 
-export const COLORS = {
-  themeTeal: "#13A3BB",
-  themePurple: "#CB1482",
-
-  white: "white",
-  dirtyWhite: "#EAEAEA",
-  greyLight: "#B2B2B2",
-  greyMid: "#858585",
-  greyDark: "#6A6A6A",
-};
-
-export const RECTANGLE_COLORS = [
-  COLORS.themePurple,
-  COLORS.themeTeal,
-  "#10b918",
-  "#1454cb",
-  "#9114cb",
-  "#cb5d14",
-  "#b31847",
-  "#8dbe18",
-];
-
 export const ANIMATION = { fast: "0.2s" };
-
-export const textWhite = css`
-  color: ${COLORS.white};
-`;
-export const textCenter = css`
-  text-align: center;
-`;
-
-export const textNormal = cx(textWhite);
 
 export const spacing = (...a: number[]): string =>
   a.map((n) => `${n * 4}px`).join(" ");
@@ -139,6 +108,59 @@ export const modalDimmer = cx(
   `,
 );
 
+export const pinchZoomStyle = cx(relative, wh100);
+
+export interface AppTheme {
+  primary: string;
+  primaryLight: string;
+}
+
+export const ThemeTeal: AppTheme = {
+  primary: `hsl(189, 82%, 40%)`, // "#13A3BB",
+  primaryLight: `hsl(189, 82%, 50%)`,
+};
+export const ThemePurple: AppTheme = {
+  primary: `hsl(324, 82%, 44%)`, // "#CB1482",
+  primaryLight: `hsl(324, 82%, 58%)`,
+};
+
+export const COLORS = {
+  themeTeal: "#13A3BB", // we need to use hex here cause SVG has problem with hsl
+  themePurple: "#CB1482",
+
+  white: "white",
+  dirtyWhite: "#EAEAEA",
+  greyLight: "#B2B2B2",
+  greyMid: "#858585",
+  greyDark: "#6A6A6A",
+};
+
+export const theme = (theme: AppTheme): string => css`
+  --primary: ${theme.primary};
+  --primary-light: ${theme.primaryLight};
+`;
+
+export const RECTANGLE_COLORS = [
+  COLORS.themePurple,
+  COLORS.themeTeal,
+  "#10b918",
+  "#1454cb",
+  "#9114cb",
+  "#cb5d14",
+  "#b31847",
+  "#8dbe18",
+];
+
+export const textWhite = css`
+  color: ${COLORS.white};
+`;
+
+export const textNormal = cx(textWhite);
+
+export const textCenter = css`
+  text-align: center;
+`;
+
 export const modal = css`
   margin: 50px auto 0;
   border-radius: ${borderRadius("m")};
@@ -146,23 +168,3 @@ export const modal = css`
   overflow: hidden;
   position: relative;
 `;
-
-export const pinchZoomStyle = cx(relative, wh100);
-
-export const imageInfoTopStyle = (theme: AppTheme): string => css`
-  position: absolute;
-  top: 0;
-  background-color: ${theme.primary};
-  padding: ${spacing(0.5, 4, 1)};
-`;
-
-export interface AppTheme {
-  primary: string;
-}
-
-export const ThemeTeal: AppTheme = {
-  primary: COLORS.themeTeal,
-};
-export const ThemePurple: AppTheme = {
-  primary: COLORS.themePurple,
-};

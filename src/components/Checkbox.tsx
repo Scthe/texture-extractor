@@ -22,10 +22,14 @@ const iconClass = css`
   top: 1px;
 `;
 
+const checkedClass = css`
+  background-color: var(--primary);
+  border-color: var(--primary);
+`;
+
 interface Props {
   id: string;
   title?: string;
-  theme: s.AppTheme;
   className?: string;
   checked: boolean;
   onChecked: (nextValue: boolean) => void;
@@ -34,16 +38,10 @@ interface Props {
 export const Checkbox: FC<Props> = ({
   id,
   title,
-  theme,
   className,
   onChecked,
   checked,
 }) => {
-  const checkedClass = css`
-    background-color: ${theme.primary};
-    border-color: ${theme.primary};
-  `;
-
   const handler = useCallback(() => {
     if (onChecked) {
       onChecked(!checked);

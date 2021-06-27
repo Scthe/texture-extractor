@@ -30,14 +30,14 @@ const CHECKER_COLOR_2 = hexAsSvgColor(s.COLORS.greyMid);
 
 const HELP_TEXT = [
   "Use Texture Extractor to map parts of input image (right side of the screen) to rectangles (left side of the screen).",
-  "Use the Extracted Texture view to preview the selected area content. This view contains image generated from input image based on active selection. Live updates provide feedback during changes.",
+  "Use the Extracted Texture view to preview the selection area content. This view contains image generated from input image based on active selection. Live updates provide feedback during changes.",
   "Use settings panel in bottom right corner of this view to save the result as a file.",
 ];
 
 interface RedrawParams {
   ctx: GlContext | null;
   borderSafeSpace: number;
-  rect: Rect;
+  rect: Rect | undefined;
   renderSmooth: boolean;
 }
 const redrawUVview = ({
@@ -54,6 +54,18 @@ const redrawUVview = ({
   }
 };
 
+const getRectToDraw = (
+  rect: Rect | undefined,
+  allRects: SelectionRect[],
+  selectedRectangleId: number,
+): Rect | undefined => {
+  if (rect != null) {
+    return rect;
+  }
+  const selRect = allRects.find((r) => r.id === selectedRectangleId);
+  return selRect != null ? selRect.points : allRects[0]?.points;
+};
+
 const container = css`
   border-right: 4px solid ${s.ThemeTeal.primary};
   background: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 2"><rect width="2" height="2" fill="${CHECKER_COLOR_1}"/><path d="M1 2V0h1v1H0v1z" fill="${CHECKER_COLOR_2}"/></svg>');
@@ -63,13 +75,20 @@ const container = css`
 
 export const UVscreen: FC<unknown> = forwardRef(
   (_, ref: Ref<RefrawWebGlRef>) => {
-    const { image, borderSafeSpace, rectangles, renderSmooth } =
-      useAppStatePartial(
-        "borderSafeSpace",
-        "image",
-        "rectangles",
-        "renderSmooth",
-      );
+    const {
+      image,
+      borderSafeSpace,
+      rectangles,
+      renderSmooth,
+      selectedRectangleId,
+    } = useAppStatePartial(
+      "borderSafeSpace",
+      "image",
+      "rectangles",
+      "renderSmooth",
+      "selectedRectangleId",
+    );
+
     const canvasRef = useRef<HTMLCanvasElement>();
     const glContextRef = useRef<GlContext | null>();
     const [isSettingsOpen, setSettingsOpen] = useSettingsOpenState();
@@ -78,10 +97,15 @@ export const UVscreen: FC<unknown> = forwardRef(
       borderSafeSpace,
       rectangles,
       renderSmooth,
+      selectedRectangleId,
     });
 
     const redrawUVviewRef = useLatest<RedrawWebGl>((rect: Rect | undefined) => {
-      rect = rect != null ? rect : uvStateRef.current.rectangles[0]?.points;
+      rect = getRectToDraw(
+        rect,
+        uvStateRef.current.rectangles,
+        uvStateRef.current.selectedRectangleId,
+      );
       redrawUVview({
         ...uvStateRef.current,
         ctx: glContextRef.current,
@@ -93,10 +117,12 @@ export const UVscreen: FC<unknown> = forwardRef(
       redrawWebGl: (rect: Rect | undefined) => redrawUVviewRef.current(rect),
     }));
 
+    // conditions to redraw other than moved rectangles
     useEffect(() => {
       redrawUVviewRef.current(undefined);
-    }, [redrawUVviewRef, renderSmooth]);
+    }, [redrawUVviewRef, renderSmooth, selectedRectangleId]);
 
+    // when image changed (or canvas, but that's less likely)
     useEffect(() => {
       if (canvasRef.current == null || image == null) {
         // console.log("Skipping webgl context create - no <canvas> or image");
@@ -122,7 +148,7 @@ export const UVscreen: FC<unknown> = forwardRef(
     useAutoZoomPinchZoom(image, pinchZoomRef);
 
     return (
-      <div class={cx(s.appColumnStyle, container)}>
+      <div class={cx(s.theme(s.ThemeTeal), s.appColumnStyle, container)}>
         <pinch-zoom
           ref={pinchZoomRef}
           class={s.pinchZoomStyle}
@@ -137,21 +163,14 @@ export const UVscreen: FC<unknown> = forwardRef(
           ) : null}
         </pinch-zoom>
 
-        <ZoomNumber theme={s.ThemeTeal} zoom={zoom} />
+        <ZoomNumber zoom={zoom} />
         <ScreenName
           theme={s.ThemeTeal}
           name="Extracted Texture"
           helpText={HELP_TEXT}
         />
-        <SettingsOpenButton
-          theme={s.ThemeTeal}
-          setSettingsOpen={setSettingsOpen}
-        />
-        <UvSettings
-          theme={s.ThemeTeal}
-          isOpen={isSettingsOpen}
-          setSettingsOpen={setSettingsOpen}
-        />
+        <SettingsOpenButton setSettingsOpen={setSettingsOpen} />
+        <UvSettings isOpen={isSettingsOpen} setSettingsOpen={setSettingsOpen} />
       </div>
     );
   },

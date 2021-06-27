@@ -12,6 +12,11 @@ const imageWrapper = css`
   border-radius: 50%;
   position: relative;
   overflow: hidden;
+
+  transition: transform ${s.ANIMATION.fast};
+  button:hover & {
+    transform: scale(1.1);
+  }
 `;
 const image = css`
   display: block;
@@ -31,7 +36,7 @@ export const ImageAvatar: FC<Props> = ({ imageData, setImage }) => {
     <li class={container}>
       <button
         title={imageData.tooltip}
-        class={cx(s.invisibleBtn, s.activableHover)}
+        class={cx(s.invisibleBtn)}
         onClick={() => setImage(imageData)}
       >
         <div class={imageWrapper}>

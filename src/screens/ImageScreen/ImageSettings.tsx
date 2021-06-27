@@ -1,4 +1,4 @@
-import { cx } from "@emotion/css";
+import { css, cx } from "@emotion/css";
 import { h, FunctionComponent as FC } from "preact";
 
 import { SettingsPanel } from "../../components/SettingsPanel";
@@ -7,9 +7,22 @@ import { Button } from "../../components/Button";
 import { Checkbox, CheckboxLabel } from "../../components/Checkbox";
 import { useAppStatePartial } from "../../state/AppState";
 import * as s from "../../style";
+import { RectangleItem } from "./RectangleItem";
+
+const rectSection = css`
+  display: block;
+  padding-right: 0;
+  padding-left: 0;
+`;
+
+const rectList = css`
+  margin-top: ${s.spacing(2)};
+  max-height: min(30vh, 150px);
+  overflow-y: scroll;
+  scrollbar-width: thin; // :)
+`;
 
 interface Props {
-  theme: s.AppTheme;
   isOpen: boolean;
   setSettingsOpen: (nextOpen: boolean) => void;
   isDimed: boolean;
@@ -17,24 +30,25 @@ interface Props {
 }
 
 export const ImageSettings: FC<Props> = ({
-  theme,
   isOpen,
   setSettingsOpen,
   isDimed,
   setIsDimed,
 }) => {
-  const { setImage } = useAppStatePartial("setImage");
+  const { setImage, rectangles, addRectangle } = useAppStatePartial(
+    "setImage",
+    "rectangles",
+    "addRectangle",
+  );
 
   return (
     <SettingsPanel
-      theme={theme}
       title="Input Settings"
       isOpen={isOpen}
       setSettingsOpen={setSettingsOpen}
     >
       <SettingsSection className={s.flexCenter}>
         <Button
-          theme={theme}
           icon="close"
           title="Close current image and start with a new one"
           onClick={() => {
@@ -45,12 +59,28 @@ export const ImageSettings: FC<Props> = ({
         </Button>
       </SettingsSection>
 
-      {/* TODO Rectangle selection
-      <SettingsSection className={cx(s.flexSides, s.flexAltCenter)}>
-        <Button>Add new selection</Button>
-        <ul> (shows only 4.5lines) </ul>
+      <SettingsSection className={rectSection}>
+        <div class={s.flexCenter}>
+          <Button
+            icon="add"
+            title="Add new selection area to extract another part of the image"
+            onClick={() => {
+              addRectangle();
+            }}
+          >
+            Add New Selection Area
+          </Button>
+        </div>
+        <ul class={cx(s.noMargins, rectList)}>
+          {rectangles.map((rect) => (
+            <RectangleItem
+              key={rect.id}
+              rect={rect}
+              isDeletable={rectangles.length > 1}
+            />
+          ))}
+        </ul>
       </SettingsSection>
-       */}
 
       <SettingsSection className={cx(s.flexSides, s.flexAltCenter)}>
         <CheckboxLabel
@@ -62,7 +92,6 @@ export const ImageSettings: FC<Props> = ({
         <Checkbox
           id="image-dim-checkbox"
           title="Shade the image for easier selection"
-          theme={theme}
           checked={isDimed}
           onChecked={setIsDimed}
         />

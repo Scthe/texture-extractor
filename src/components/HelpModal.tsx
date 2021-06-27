@@ -24,28 +24,24 @@ interface Props {
   text: HelpText;
   isOpen: boolean;
   setClosed: () => void;
+  theme: s.AppTheme;
 }
 
-export const HelpModal: FC<Props> = ({ text, isOpen, setClosed }) => {
+export const HelpModal: FC<Props> = ({ theme, text, isOpen, setClosed }) => {
   if (!isOpen) {
     return null;
   }
 
   return (
     <div class={s.modalDimmer}>
-      <div class={cx(s.modal, modal)}>
+      <div class={cx(s.theme(theme), s.modal, modal)}>
         {text.map((textString, idx) => (
           <p key={idx} class={cx(s.noMargins, textStyle)}>
             {textString}
           </p>
         ))}
 
-        {/* TODO theme from props */}
-        <Button
-          theme={s.ThemePurple}
-          onClick={setClosed}
-          className={buttonStyle}
-        >
+        <Button onClick={setClosed} className={buttonStyle}>
           Close
         </Button>
       </div>

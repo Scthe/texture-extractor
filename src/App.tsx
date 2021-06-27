@@ -1,7 +1,7 @@
 import { h } from "preact";
 import { useCallback, useEffect, useRef } from "preact/hooks";
 import { createPortal } from "preact/compat";
-import { css } from "@emotion/css";
+import { css, cx } from "@emotion/css";
 import "pinch-zoom-element";
 import type { FileDropEvent } from "file-drop-element";
 
@@ -10,6 +10,7 @@ import { ImageScreen } from "./screens/ImageScreen";
 import { WelcomeModal } from "./screens/WelcomeModal";
 import { useAppState } from "./state/AppState";
 import { useLatest } from "./hooks/useLatest";
+import * as s from "./style";
 
 declare module "preact" {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -58,7 +59,7 @@ function App(): h.JSX.Element {
   );
 
   return (
-    <div class={containterStyle}>
+    <div class={cx(s.theme(s.ThemePurple), containterStyle)}>
       <UVscreen ref={redrawWebglRef} />
       <ImageScreen onDragging={onDragging} onDragEnd={onDragEnd} />
       {createPortal(<WelcomeModal />, modalContainer)}

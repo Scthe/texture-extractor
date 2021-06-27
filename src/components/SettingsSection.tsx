@@ -2,6 +2,8 @@ import { h, FunctionComponent as FC } from "preact";
 import { css, cx } from "@emotion/css";
 import * as s from "../style";
 
+export const SETTINGS_SECTION_PADDING_H = 4;
+
 const container = css`
   border-bottom: 1px solid ${s.COLORS.greyLight};
   &:last-child {
@@ -10,7 +12,7 @@ const container = css`
 `;
 
 const content = css`
-  padding: ${s.spacing(3, 4)};
+  padding: ${s.spacing(3, SETTINGS_SECTION_PADDING_H)};
   display: flex;
 `;
 

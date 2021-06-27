@@ -9,7 +9,6 @@ interface Props {
   isOpen: boolean;
   setSettingsOpen: (nextOpen: boolean) => void;
   title: string;
-  theme: s.AppTheme;
 }
 
 const titleText = css`
@@ -29,7 +28,6 @@ export const SettingsPanel: FC<Props> = ({
   isOpen,
   setSettingsOpen,
   title,
-  theme,
   children,
 }) => {
   const hideSettings = useCallback(
@@ -47,7 +45,7 @@ export const SettingsPanel: FC<Props> = ({
     max-width: 100%;
   `;
   const header = css`
-    background-color: ${theme.primary};
+    background-color: var(--primary);
     border-top-left-radius: ${s.borderRadius("m")};
     width: 100%;
     height: 32px;

@@ -8,7 +8,6 @@ import { useAppStatePartial } from "../../state/AppState";
 import * as s from "../../style";
 
 interface Props {
-  theme: s.AppTheme;
   isOpen: boolean;
   setSettingsOpen: (nextOpen: boolean) => void;
 }
@@ -20,7 +19,7 @@ if > 1: Download All: .png
 Download Current
 */
 
-export const UvSettings: FC<Props> = ({ theme, isOpen, setSettingsOpen }) => {
+export const UvSettings: FC<Props> = ({ isOpen, setSettingsOpen }) => {
   const { renderSmooth, setRenderSmooth } = useAppStatePartial(
     "renderSmooth",
     "setRenderSmooth",
@@ -28,16 +27,14 @@ export const UvSettings: FC<Props> = ({ theme, isOpen, setSettingsOpen }) => {
 
   return (
     <SettingsPanel
-      theme={theme}
       title="Output Settings"
       isOpen={isOpen}
       setSettingsOpen={setSettingsOpen}
     >
       <SettingsSection className={s.flexCenter}>
         <Button
-          theme={theme}
           icon="file_download"
-          title="Download the result image for currently selected area"
+          title="Download the result image for current selection area"
           onClick={() => {}} // TODO download image
         >
           Download Image
@@ -54,7 +51,6 @@ export const UvSettings: FC<Props> = ({ theme, isOpen, setSettingsOpen }) => {
         <Checkbox
           id="uv-soften-checkbox"
           title="Blur image. May improve result for certain types of content."
-          theme={theme}
           checked={renderSmooth}
           onChecked={setRenderSmooth}
         />
