@@ -123,7 +123,7 @@ const renderFullscreenQuad = ({ gl }: GlContext): void => {
   gl.drawArrays(gl.TRIANGLES, 0, triCnt * 3);
 };
 
-const getRectDimensions = (rect: Rect): [number, number] => {
+export const getRectDimensions = (rect: Rect): [number, number] => {
   const w1 = Math.abs(rect[0].x - rect[1].x);
   const w2 = Math.abs(rect[2].x - rect[3].x);
   const h1 = Math.abs(rect[0].y - rect[2].y);

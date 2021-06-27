@@ -4,14 +4,9 @@ import { h, FunctionComponent as FC, Ref } from "preact";
 import { forwardRef } from "preact/compat";
 import type PinchZoom from "pinch-zoom-element";
 
-import {
-  destroyGlContext,
-  GlContext,
-  initializeGlView,
-  redraw,
-} from "../../gl";
+import { destroyGlContext, GlContext, initializeGlView } from "../../gl";
 import { useLatest } from "../../hooks/useLatest";
-import { sub2d, hexAsSvgColor } from "../../utils";
+import { hexAsSvgColor } from "../../utils";
 import { ZoomNumber } from "../../components/ZoomNumber";
 import { ScreenName } from "../../components/ScreenName";
 import { SettingsOpenButton } from "../../components/SettingsOpenButton";
@@ -21,6 +16,7 @@ import { useAutoZoomPinchZoom } from "../../hooks/useAutoZoomPinchZoom";
 import { useAppStatePartial } from "../../state/AppState";
 import * as s from "../../style";
 import { UvSettings } from "./UvSettings";
+import { getRectToDraw, redrawUVview } from "./utils";
 
 type RedrawWebGl = (rect: Rect | undefined) => void;
 export type RefrawWebGlRef = { redrawWebGl: RedrawWebGl };
@@ -33,38 +29,6 @@ const HELP_TEXT = [
   "Use the Extracted Texture view to preview the selection area content. This view contains image generated from input image based on active selection. Live updates provide feedback during changes.",
   "Use settings panel in bottom right corner of this view to save the result as a file.",
 ];
-
-interface RedrawParams {
-  ctx: GlContext | null;
-  borderSafeSpace: number;
-  rect: Rect | undefined;
-  renderSmooth: boolean;
-}
-const redrawUVview = ({
-  ctx,
-  borderSafeSpace,
-  rect,
-  renderSmooth,
-}: RedrawParams) => {
-  if (rect != null && ctx != null) {
-    const rectNoPadding = rect.map((p) =>
-      sub2d(p, { x: borderSafeSpace, y: borderSafeSpace }),
-    ) as Rect;
-    redraw(ctx, rectNoPadding, renderSmooth);
-  }
-};
-
-const getRectToDraw = (
-  rect: Rect | undefined,
-  allRects: SelectionRect[],
-  selectedRectangleId: number,
-): Rect | undefined => {
-  if (rect != null) {
-    return rect;
-  }
-  const selRect = allRects.find((r) => r.id === selectedRectangleId);
-  return selRect != null ? selRect.points : allRects[0]?.points;
-};
 
 const container = css`
   border-right: 4px solid ${s.ThemeTeal.primary};

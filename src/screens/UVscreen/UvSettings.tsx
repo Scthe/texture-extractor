@@ -6,6 +6,7 @@ import { Button } from "../../components/Button";
 import { Checkbox, CheckboxLabel } from "../../components/Checkbox";
 import { useAppStatePartial } from "../../state/AppState";
 import * as s from "../../style";
+import { useResultDownload } from "./useResultDownload";
 
 interface Props {
   isOpen: boolean;
@@ -24,6 +25,7 @@ export const UvSettings: FC<Props> = ({ isOpen, setSettingsOpen }) => {
     "renderSmooth",
     "setRenderSmooth",
   );
+  const { downloadSelectedRect } = useResultDownload();
 
   return (
     <SettingsPanel
@@ -35,7 +37,7 @@ export const UvSettings: FC<Props> = ({ isOpen, setSettingsOpen }) => {
         <Button
           icon="file_download"
           title="Download the result image for current selection area"
-          onClick={() => {}} // TODO download image
+          onClick={downloadSelectedRect}
         >
           Download Image
         </Button>
