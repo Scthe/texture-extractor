@@ -19,9 +19,11 @@ const style = css`
     background-color: var(--primary-light);
   }
 `;
+
 const withIcon = css`
   padding-left: 43px;
 `;
+
 const iconStyle = css`
   position: absolute;
   top: 4px;
@@ -29,11 +31,17 @@ const iconStyle = css`
   font-size: 24px;
 `;
 
+const disabledStyle = css`
+  opacity: 0.5;
+  cursor: not-allowed;
+`;
+
 interface Props {
   icon?: string;
   title?: string;
   onClick: () => void;
   className?: string;
+  disabled?: boolean;
 }
 
 export const Button: FC<Props> = ({
@@ -42,11 +50,18 @@ export const Button: FC<Props> = ({
   className,
   onClick,
   children,
+  disabled,
 }) => {
   return (
     <button
       onClick={onClick}
-      className={cx(s.textWhite, style, icon != null && withIcon, className)}
+      className={cx(
+        s.textWhite,
+        style,
+        icon != null && withIcon,
+        className,
+        disabled && disabledStyle,
+      )}
       title={title}
     >
       {icon != null ? <Icon className={iconStyle} name={icon} /> : null}

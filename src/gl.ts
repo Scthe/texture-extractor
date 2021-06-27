@@ -128,21 +128,33 @@ export const getRectDimensions = (rect: Rect): [number, number] => {
   const w2 = Math.abs(rect[2].x - rect[3].x);
   const h1 = Math.abs(rect[0].y - rect[2].y);
   const h2 = Math.abs(rect[1].y - rect[3].y);
-  return [(w1 + w2) / 2, (h1 + h2) / 2];
+  return [Math.ceil((w1 + w2) / 2), Math.ceil((h1 + h2) / 2)];
 };
 
-export const redraw = (ctx: GlContext, rect: Rect, isSmooth: boolean): void => {
+interface RedrawOpts {
+  isSmooth: boolean;
+  start: Point2d;
+  clear: boolean;
+}
+
+export const redraw = (
+  ctx: GlContext,
+  rect: Rect,
+  { isSmooth, start, clear }: RedrawOpts,
+): void => {
   const { gl, shader, imageTexture } = ctx;
   const sampler = isSmooth ? ctx.samplerLinear : ctx.samplerNearest;
   sampler.bindAsActive(gl);
 
   // clear
-  gl.viewport(0, 0, imageTexture.width, imageTexture.height);
-  gl.clear(gl.COLOR_BUFFER_BIT);
+  if (clear) {
+    gl.viewport(0, 0, imageTexture.width, imageTexture.height);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+  }
 
   // draw
   const rectDims = getRectDimensions(rect);
-  gl.viewport(0, 0, rectDims[0], rectDims[1]);
+  gl.viewport(start.x, start.y, rectDims[0], rectDims[1]);
 
   const points: Point2d[] = rect.map((p) => ({
     x: clamp(p.x / imageTexture.width, 0.0, 1.0),

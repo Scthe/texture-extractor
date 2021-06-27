@@ -1,52 +1,85 @@
 import { useCallback } from "preact/hooks";
 import { useLatest } from "../../hooks/useLatest";
-import { useAppStatePartial } from "../../state/AppState";
+import { AppState, useAppStatePartial } from "../../state/AppState";
+import { getRectDimensions } from "../../gl";
+import { logEvent, logError } from "../../utils/log";
 import {
-  destroyGlContext,
-  getRectDimensions,
-  GlContext,
-  initializeGlView,
-} from "../../gl";
-import { logError } from "../../utils/log";
-import { getSelectedRect, redrawUVview } from "./utils";
+  downloadCanvasAsImage,
+  getSelectedRect,
+  redrawUVview,
+  withGlContext,
+} from "./utils";
 
-const withGlContext = (
-  width: number,
-  height: number,
-  imageData: ImageData,
-  cb: (canvas: HTMLCanvasElement, ctx: GlContext) => void,
-) => {
-  let ctx: GlContext | undefined;
+const PADDING = 10; // in pixels
 
+type DownloadData = Pick<
+  AppState,
+  "image" | "renderSmooth" | "borderSafeSpace"
+>;
+
+function getAnalyticsParams(rects: SelectionRect[], data: DownloadData) {
+  return {
+    isExample: data.image?.isExample,
+    image: [data.image?.data.width, data.image?.data.height],
+    renderSmooth: data.renderSmooth,
+    selections: rects.map((r) => getRectDimensions(r.points)),
+  };
+}
+
+const getAllRectsCanvasSize = (rects: SelectionRect[]): [number, number] => {
+  const dims = rects.map((r) => getRectDimensions(r.points));
+  const rawWidth = dims.reduce((acc, r) => acc + r[0], 0);
+  const padding = (rects.length - 1) * PADDING;
+  const paddingBorderLeftRight = PADDING * 2;
+  return [
+    rawWidth + padding + paddingBorderLeftRight,
+    Math.max(...dims.map((d) => d[1])),
+  ];
+};
+
+const downloadRectangles = (rects: SelectionRect[], data: DownloadData) => {
   try {
-    const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-    ctx = initializeGlView(canvas, imageData);
-    cb(canvas, ctx);
-  } catch (e) {
-    logError("Download error", e);
-  } finally {
-    if (ctx) {
-      destroyGlContext(ctx);
+    const { image, renderSmooth, borderSafeSpace } = data;
+    if (rects.length === 0 || !image?.data) {
+      return;
     }
+    logEvent("download", getAnalyticsParams(rects, data));
+
+    const [w, h] = getAllRectsCanvasSize(rects);
+
+    withGlContext(w, h, image?.data, (canvas, ctx) => {
+      // clear
+      ctx.gl.clearColor(1, 0, 1, 1);
+      ctx.gl.clear(ctx.gl.COLOR_BUFFER_BIT);
+
+      let currentX = PADDING;
+      for (let index = 0; index < rects.length; index++) {
+        // I don't even closures..
+        const rect = rects[index];
+        redrawUVview(ctx, rect.points, {
+          borderSafeSpace,
+          renderSmooth,
+          start: { x: currentX, y: 0 },
+          clear: false,
+        });
+
+        // shift to the right for next image area
+        const dims = getRectDimensions(rect.points);
+        currentX += dims[0] + PADDING;
+      }
+
+      // aaaand we done
+      const rectSufix = rects.length === 1 ? `-${rects[0].id}` : "";
+      downloadCanvasAsImage(canvas, `${image.filename}${rectSufix}`);
+    });
+  } catch (e) {
+    logError("Download error", e, getAnalyticsParams(rects, data));
   }
 };
 
-function downloadCanvasAsImage(canvas: HTMLCanvasElement, filename: string) {
-  const downloadLink = document.createElement("a");
-  downloadLink.setAttribute("download", `${filename}.png`);
-  const dataURL = canvas.toDataURL("image/png");
-  const url = dataURL.replace(
-    /^data:image\/png/,
-    "data:application/octet-stream",
-  );
-  downloadLink.setAttribute("href", url);
-  downloadLink.click();
-}
-
 interface Result {
   downloadSelectedRect: () => void;
+  downloadAllRects: () => void;
 }
 
 export const useResultDownload = (): Result => {
@@ -60,30 +93,19 @@ export const useResultDownload = (): Result => {
   const dataRef = useLatest(rawData);
 
   const downloadSelectedRect = useCallback(() => {
-    const {
-      image,
-      rectangles,
-      selectedRectangleId,
-      renderSmooth,
-      borderSafeSpace,
-    } = dataRef.current;
+    const { rectangles, selectedRectangleId } = dataRef.current;
     const rect = getSelectedRect(rectangles, selectedRectangleId);
-    if (!rect || !image?.data) {
-      return;
-    }
+    const rects = rect != null ? [rect] : [];
 
-    // TODO analytics
-    const [w, h] = getRectDimensions(rect.points);
-    withGlContext(w, h, image?.data, (canvas, ctx) => {
-      redrawUVview({
-        ctx,
-        borderSafeSpace,
-        rect: rect.points,
-        renderSmooth,
-      });
-      downloadCanvasAsImage(canvas, `${image.filename}-${rect.id}`);
-    });
+    logEvent("download_selected", getAnalyticsParams(rects, dataRef.current));
+    downloadRectangles(rects, dataRef.current);
   }, [dataRef]);
 
-  return { downloadSelectedRect };
+  const downloadAllRects = useCallback(() => {
+    const { rectangles } = dataRef.current;
+    logEvent("download_all", getAnalyticsParams(rectangles, dataRef.current));
+    downloadRectangles(rectangles, dataRef.current);
+  }, [dataRef]);
+
+  return { downloadSelectedRect, downloadAllRects };
 };

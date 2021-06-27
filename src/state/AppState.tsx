@@ -4,7 +4,7 @@ import { ensurePointInsideImage, getFromArray } from "../utils";
 
 const SELECTED_NONE = -999;
 
-interface AppState {
+export interface AppState {
   _nextRectangleId: number;
   selectedRectangleId: number;
   rectangles: SelectionRect[];

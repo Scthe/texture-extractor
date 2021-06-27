@@ -70,10 +70,11 @@ export const UVscreen: FC<unknown> = forwardRef(
         uvStateRef.current.rectangles,
         uvStateRef.current.selectedRectangleId,
       );
-      redrawUVview({
-        ...uvStateRef.current,
-        ctx: glContextRef.current,
-        rect,
+      redrawUVview(glContextRef.current, rect, {
+        borderSafeSpace,
+        renderSmooth,
+        start: { x: 0, y: 0 },
+        clear: true,
       });
     });
 

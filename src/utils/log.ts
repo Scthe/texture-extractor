@@ -1,7 +1,7 @@
 // TODO analytics
 // TODO sentry
 
-type EventParams = Record<string, string | number | undefined>;
+type EventParams = Record<string, unknown>;
 
 export const logEvent = (name: string, params: EventParams = {}): void => {
   console.log("[EVENT]", name, params);
