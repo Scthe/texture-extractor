@@ -5,7 +5,6 @@ import { ensurePointInsideImage, getFromArray } from "../utils";
 const SELECTED_NONE = -999;
 
 export interface AppState {
-  _nextRectangleId: number;
   selectedRectangleId: number;
   rectangles: SelectionRect[];
   borderSafeSpace: number;
@@ -13,7 +12,7 @@ export interface AppState {
   renderSmooth: boolean;
 
   // setters:
-  setImage: (image: AppImageData | null) => void;
+  setImage: (image: AppImageData | null, rects?: SelectionRect[]) => void;
   addRectangle: () => void;
   removeRectangle: (id: number) => void;
   selectRectangle: (id: number) => void;
@@ -24,13 +23,15 @@ export interface AppState {
 // there is some nicer Pick<>, but too lazy ATM
 type StateSetter<
   T extends
-    | "setImage"
-    | "addRectangle"
-    | "removeRectangle"
-    | "selectRectangle"
-    | "moveRectangle"
-    | "setRenderSmooth",
-> = (state: AppState, ...params: Parameters<AppState[T]>) => AppState;
+  | "setImage"
+  | "addRectangle"
+  | "removeRectangle"
+  | "selectRectangle"
+  | "moveRectangle"
+  | "setRenderSmooth",
+  > = (state: AppState, ...params: Parameters<AppState[T]>) => AppState;
+
+const localStorageKey = (image: AppImageData) => `image--${image.filename}`;
 
 const _DEBUGcreateRectangle = (
   id: number,
@@ -77,6 +78,53 @@ const createRectangle = (
   };
 };
 
+const getNextId = (rectangles: SelectionRect[]): number => {
+  if (rectangles.length < 1) { return 1; }
+  return 1 + Math.max(...rectangles.map(r => r.id));
+};
+
+const getInitRectangles = (
+  image: AppImageData | null,
+  rects: SelectionRect[] | undefined,
+  borderSafeSpace: number
+): SelectionRect[] => {
+  if (image == null) { return []; }
+
+  const isOk = (rects: unknown): rects is SelectionRect[] =>
+    rects != null && Array.isArray(rects) && rects.length > 0
+
+  if (isOk(rects)) {
+    return rects;
+  }
+
+  try {
+    const fromStorageStr = localStorage.getItem(localStorageKey(image));
+    const fromStorage = fromStorageStr != null ? JSON.parse(fromStorageStr) : null;
+    if (isOk(fromStorage)) {
+      return fromStorage;
+    }
+    // eslint-disable-next-line no-empty
+  } catch (_e) { }
+
+  return [
+    createRectangle(0, image, borderSafeSpace),
+    // debug only
+    // _DEBUGcreateRectangle(100, image, state.borderSafeSpace),
+    // _DEBUGcreateRectangle(101, image, state.borderSafeSpace),
+    // _DEBUGcreateRectangle(102, image, state.borderSafeSpace),
+    // _DEBUGcreateRectangle(103, image, state.borderSafeSpace),
+    // _DEBUGcreateRectangle(104, image, state.borderSafeSpace),
+    // _DEBUGcreateRectangle(105, image, state.borderSafeSpace),
+  ];
+};
+
+const persistRectangles = (image: AppImageData | null, rects: SelectionRect[]) => {
+  if (image != null && rects.length > 0) {
+    localStorage.setItem(localStorageKey(image), JSON.stringify(rects));
+  }
+};
+
+
 // Better checking for misspelled properties
 function check<T extends AppState, U extends Record<keyof AppState, unknown>>(
   t: T & U,
@@ -84,45 +132,35 @@ function check<T extends AppState, U extends Record<keyof AppState, unknown>>(
   return t;
 }
 
-const setImage: StateSetter<"setImage"> = (state, image) => {
-  const rectangles =
-    image == null
-      ? []
-      : [
-          createRectangle(0, image, state.borderSafeSpace),
-          // debug only
-          // _DEBUGcreateRectangle(100, image, state.borderSafeSpace),
-          // _DEBUGcreateRectangle(101, image, state.borderSafeSpace),
-          // _DEBUGcreateRectangle(102, image, state.borderSafeSpace),
-          // _DEBUGcreateRectangle(103, image, state.borderSafeSpace),
-          // _DEBUGcreateRectangle(104, image, state.borderSafeSpace),
-          // _DEBUGcreateRectangle(105, image, state.borderSafeSpace),
-        ];
+
+const setImage: StateSetter<"setImage"> = (state, image, rects) => {
+  const rectangles = getInitRectangles(image, rects, state.borderSafeSpace);
+
   return check({
     ...state,
-    _nextRectangleId: 1,
-    selectedRectangleId: 0,
+    selectedRectangleId: rectangles.length > 0 ? rectangles[0].id : SELECTED_NONE,
     rectangles,
     image,
   });
 };
 
 const addRectangle: StateSetter<"addRectangle"> = (state) => {
-  const rectangles =
-    state.image == null
-      ? []
-      : [
-          ...state.rectangles,
-          createRectangle(
-            state._nextRectangleId,
-            state.image,
-            state.borderSafeSpace,
-          ),
-        ];
+  if (state.image == null) {
+    return state;
+  }
+
+  const nextId = getNextId(state.rectangles);
+  const newRect = createRectangle(
+    nextId,
+    state.image,
+    state.borderSafeSpace,
+  );
+  const rectangles = [...state.rectangles, newRect,];
+  persistRectangles(state.image, rectangles);
+
   return check({
     ...state,
-    _nextRectangleId: state._nextRectangleId + 1,
-    selectedRectangleId: state._nextRectangleId,
+    selectedRectangleId: newRect.id,
     rectangles,
   });
 };
@@ -139,6 +177,7 @@ const removeRectangle: StateSetter<"removeRectangle"> = (
     id === state.selectedRectangleId
       ? rectangles[0].id
       : state.selectedRectangleId;
+  persistRectangles(state.image, rectangles);
 
   return check({
     ...state,
@@ -162,6 +201,8 @@ const moveRectangle: StateSetter<"moveRectangle"> = (state, id, points) => {
   const rectangles = state.rectangles.map((r) =>
     r.id === id ? { ...r, points } : r,
   );
+  persistRectangles(state.image, rectangles);
+
   return check({
     ...state,
     selectedRectangleId: id,
@@ -170,7 +211,6 @@ const moveRectangle: StateSetter<"moveRectangle"> = (state, id, points) => {
 };
 
 export const useAppState = create<AppState>((set) => ({
-  _nextRectangleId: 1,
   selectedRectangleId: SELECTED_NONE,
   rectangles: [],
   borderSafeSpace: 20,

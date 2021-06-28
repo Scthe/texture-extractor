@@ -8,6 +8,12 @@ interface Props {
   scaleIndependent: (v: number) => number;
 }
 
+/**
+ * WARNING: THIS COMPONENT DEGRADES PERFORMANCE.
+ * NO, REALLY, IT IS SLOW af.
+ *
+ * Not sure why. But it's 2:25AM here so I'm gonna if it out.
+ */
 export const RectGridSvg: FC<Props> = ({ rect, color, scaleIndependent }) => {
   const midTop = midpoint2d(rect[2], rect[3]);
   const midBottom = midpoint2d(rect[0], rect[1]);

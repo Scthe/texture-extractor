@@ -147,12 +147,14 @@ export const RectSvg: FC<Props> = ({
         class={rectSvgStyle}
       />
 
-      {/* mid lines */}
-      <RectGridSvg
-        rect={shownRect}
-        color={rect.color}
-        scaleIndependent={scaleIndependent}
-      />
+      {/* mid lines. Performance here hurts somehow.. */}
+      {isSelected ? (
+        <RectGridSvg
+          rect={shownRect}
+          color={rect.color}
+          scaleIndependent={scaleIndependent}
+        />
+      ) : null}
 
       {/* arrow */}
       <RectArrowSvg

@@ -953,6 +953,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash.debounce@npm:^4.0.6":
+  version: 4.0.6
+  resolution: "@types/lodash.debounce@npm:4.0.6"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 64952797f594f4068d2edd1e178a553647ca4ed5716c9b7673f9187d012fe5b5a0141c15ffc82c8f4d29bf13040c53001634a5b43b51a9efdfb6d4fa77ae24aa
+  languageName: node
+  linkType: hard
+
 "@types/lodash@npm:*":
   version: 4.14.170
   resolution: "@types/lodash@npm:4.14.170"
@@ -4498,6 +4507,13 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"lodash.debounce@npm:^4.0.8":
+  version: 4.0.8
+  resolution: "lodash.debounce@npm:4.0.8"
+  checksum: b6042bd8c09ff1961c9127d32266316bc21f946ece5e3464a663ec61fadb98e7d56ec0ef7e23b47d393695310c19cf24e651c1756be6da91ac02c72be7f79465
+  languageName: node
+  linkType: hard
+
 "lodash.merge@npm:^4.6.2":
   version: 4.6.2
   resolution: "lodash.merge@npm:4.6.2"
@@ -6584,6 +6600,7 @@ fsevents@~2.1.2:
     "@testing-library/preact": ^2.0.1
     "@types/chai": ^4.2.17
     "@types/lodash.clonedeep": ^4.5.6
+    "@types/lodash.debounce": ^4.0.6
     "@types/mocha": ^8.2.2
     "@types/snowpack-env": ^2.3.3
     "@typescript-eslint/eslint-plugin": ^4.28.0
@@ -6597,6 +6614,7 @@ fsevents@~2.1.2:
     eslint-plugin-react-hooks: ^4.2.0
     file-drop-element: ^1.0.1
     lodash.clonedeep: ^4.5.0
+    lodash.debounce: ^4.0.8
     pinch-zoom-element: ^1.1.1
     pointer-tracker: ^2.4.0
     preact: ^10.5.13
