@@ -60,8 +60,6 @@ interface Props {
   onDragEnd: RectMoveCb;
 }
 
-// TODO throttle
-
 export const RectSvg: FC<Props> = ({
   rect,
   scale,

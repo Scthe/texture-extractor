@@ -197,11 +197,14 @@ export const WelcomeModal: FC<unknown> = () => {
             width: imageData.width,
             height: imageData.height,
           });
-          setImage({
-            data: imageData,
-            isExample: exampleImg != null,
-            filename: exampleImg != null ? exampleImg.name : file.name,
-          });
+          setImage(
+            {
+              data: imageData,
+              isExample: exampleImg != null,
+              filename: exampleImg != null ? exampleImg.name : file.name,
+            },
+            exampleImg?.points,
+          );
         })
         .catch((e) => {
           showError();

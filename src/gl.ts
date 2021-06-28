@@ -14,6 +14,8 @@ import {
 import { Sampler } from "./gl-utils/texture/Sampler";
 import { clamp } from "./utils";
 
+const MINI_PLANES = 20;
+
 export interface GlContext {
   gl: Webgl;
   shader: Shader;
@@ -118,8 +120,7 @@ export const initializeGlView = (
 
 const renderFullscreenQuad = ({ gl }: GlContext): void => {
   // we don't have to bind anything.
-  const miniPlanes = 5;
-  const triCnt = 2 * miniPlanes * miniPlanes;
+  const triCnt = 2 * MINI_PLANES * MINI_PLANES;
   gl.drawArrays(gl.TRIANGLES, 0, triCnt * 3);
 };
 

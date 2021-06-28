@@ -30,13 +30,15 @@ interface Props {
 // TODO Download All as .zip?
 
 export const UvSettings: FC<Props> = ({ isOpen, setSettingsOpen }) => {
-  const { renderSmooth, setRenderSmooth, rectangles } = useAppStatePartial(
+  const appState = useAppStatePartial(
     "renderSmooth",
     "setRenderSmooth",
+    "pinkBackground",
+    "setPinkBackground",
     "rectangles",
   );
   const { downloadSelectedRect, downloadAllRects } = useResultDownload();
-  const hasOneRectangle = rectangles.length < 2;
+  const hasOneRectangle = appState.rectangles.length < 2;
 
   return (
     <SettingsPanel
@@ -78,8 +80,23 @@ export const UvSettings: FC<Props> = ({ isOpen, setSettingsOpen }) => {
         <Checkbox
           id="uv-soften-checkbox"
           title="Blur image. May improve result for certain types of content."
-          checked={renderSmooth}
-          onChecked={setRenderSmooth}
+          checked={appState.renderSmooth}
+          onChecked={appState.setRenderSmooth}
+        />
+      </SettingsSection>
+
+      <SettingsSection className={cx(s.flexSides, s.flexAltCenter)}>
+        <CheckboxLabel
+          id="uv-alt-bg-checkbox"
+          title="Alternative background for 'Download All' image."
+        >
+          Alt. Background
+        </CheckboxLabel>
+        <Checkbox
+          id="uv-alt-bg-checkbox"
+          title="Alternative background for 'Download All' image."
+          checked={appState.pinkBackground}
+          onChecked={appState.setPinkBackground}
         />
       </SettingsSection>
     </SettingsPanel>

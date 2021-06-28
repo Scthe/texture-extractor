@@ -14,7 +14,7 @@ const PADDING = 10; // in pixels
 
 type DownloadData = Pick<
   AppState,
-  "image" | "renderSmooth" | "borderSafeSpace"
+  "image" | "renderSmooth" | "borderSafeSpace" | "pinkBackground"
 >;
 
 function getAnalyticsParams(rects: SelectionRect[], data: DownloadData) {
@@ -49,7 +49,11 @@ const downloadRectangles = (rects: SelectionRect[], data: DownloadData) => {
 
     withGlContext(w, h, image?.data, (canvas, ctx) => {
       // clear
-      ctx.gl.clearColor(1, 0, 1, 1);
+      if (data.pinkBackground) {
+        ctx.gl.clearColor(1, 0, 1, 1);
+      } else {
+        ctx.gl.clearColor(0, 0, 0, 1);
+      }
       ctx.gl.clear(ctx.gl.COLOR_BUFFER_BIT);
 
       let currentX = PADDING;
@@ -89,6 +93,7 @@ export const useResultDownload = (): Result => {
     "selectedRectangleId",
     "renderSmooth",
     "borderSafeSpace",
+    "pinkBackground",
   );
   const dataRef = useLatest(rawData);
 

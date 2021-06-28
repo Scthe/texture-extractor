@@ -3,19 +3,19 @@ import "preact/devtools";
 import App from "./App";
 import "./index.css";
 
-// TODO add example images to repo, with example rectangles
 // TODO sentry
 // TODO analytics
 // TODO normalizer
 // TODO readme
+// TODO minify
+// TODO test on mobile, e.g. drag&drop, image select
+
+// | add example images to repo, with example rectangles
 // | favicon
 // | package.json
 // | index.html
-// TODO local storage to save rectangles
-// TODO minify
-
-// TODO test on mobile, e.g. drag&drop, image select
 // | mobile: hide address bar
+// | local storage to save rectangles
 
 const root = document.getElementById("root");
 

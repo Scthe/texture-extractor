@@ -20,7 +20,7 @@ vec2 to_minus1_1 (vec2 a) {
   return a * 2.0f - 1.0f;
 }
 
-#define MINI_PLANES (5)
+#define MINI_PLANES (20)
 
 uniform vec4 u_uv_X;
 uniform vec4 u_uv_Y;

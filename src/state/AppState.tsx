@@ -1,4 +1,5 @@
 import create from "zustand";
+import clonedeep from "lodash.clonedeep";
 import { RECTANGLE_COLORS } from "../style";
 import { ensurePointInsideImage, getFromArray } from "../utils";
 
@@ -10,26 +11,28 @@ export interface AppState {
   borderSafeSpace: number;
   image: AppImageData | null;
   renderSmooth: boolean;
+  pinkBackground: boolean;
 
   // setters:
-  setImage: (image: AppImageData | null, rects?: SelectionRect[]) => void;
+  setImage: (image: AppImageData | null, rects: Rect[] | undefined) => void;
   addRectangle: () => void;
   removeRectangle: (id: number) => void;
   selectRectangle: (id: number) => void;
   moveRectangle: (id: number, points: Rect) => void;
   setRenderSmooth: (nextValue: boolean) => void;
+  setPinkBackground: (nextValue: boolean) => void;
 }
 
 // there is some nicer Pick<>, but too lazy ATM
 type StateSetter<
   T extends
-  | "setImage"
-  | "addRectangle"
-  | "removeRectangle"
-  | "selectRectangle"
-  | "moveRectangle"
-  | "setRenderSmooth",
-  > = (state: AppState, ...params: Parameters<AppState[T]>) => AppState;
+    | "setImage"
+    | "addRectangle"
+    | "removeRectangle"
+    | "selectRectangle"
+    | "moveRectangle"
+    | "setRenderSmooth",
+> = (state: AppState, ...params: Parameters<AppState[T]>) => AppState;
 
 const localStorageKey = (image: AppImageData) => `image--${image.filename}`;
 
@@ -79,32 +82,42 @@ const createRectangle = (
 };
 
 const getNextId = (rectangles: SelectionRect[]): number => {
-  if (rectangles.length < 1) { return 1; }
-  return 1 + Math.max(...rectangles.map(r => r.id));
+  if (rectangles.length < 1) {
+    return 1;
+  }
+  return 1 + Math.max(...rectangles.map((r) => r.id));
 };
 
 const getInitRectangles = (
   image: AppImageData | null,
-  rects: SelectionRect[] | undefined,
-  borderSafeSpace: number
+  rects: Rect[] | undefined,
+  borderSafeSpace: number,
 ): SelectionRect[] => {
-  if (image == null) { return []; }
+  if (image == null) {
+    return [];
+  }
 
-  const isOk = (rects: unknown): rects is SelectionRect[] =>
-    rects != null && Array.isArray(rects) && rects.length > 0
+  function hasData<T>(rects: unknown): rects is T[] {
+    return rects != null && Array.isArray(rects) && rects.length > 0;
+  }
 
-  if (isOk(rects)) {
-    return rects;
+  if (hasData<Rect>(rects)) {
+    return rects.map((r, idx) => ({
+      id: idx,
+      color: getFromArray(RECTANGLE_COLORS, idx),
+      points: clonedeep(r),
+    }));
   }
 
   try {
     const fromStorageStr = localStorage.getItem(localStorageKey(image));
-    const fromStorage = fromStorageStr != null ? JSON.parse(fromStorageStr) : null;
-    if (isOk(fromStorage)) {
+    const fromStorage =
+      fromStorageStr != null ? JSON.parse(fromStorageStr) : null;
+    if (hasData<SelectionRect>(fromStorage)) {
       return fromStorage;
     }
     // eslint-disable-next-line no-empty
-  } catch (_e) { }
+  } catch (_e) {}
 
   return [
     createRectangle(0, image, borderSafeSpace),
@@ -118,12 +131,14 @@ const getInitRectangles = (
   ];
 };
 
-const persistRectangles = (image: AppImageData | null, rects: SelectionRect[]) => {
+const persistRectangles = (
+  image: AppImageData | null,
+  rects: SelectionRect[],
+) => {
   if (image != null && rects.length > 0) {
     localStorage.setItem(localStorageKey(image), JSON.stringify(rects));
   }
 };
-
 
 // Better checking for misspelled properties
 function check<T extends AppState, U extends Record<keyof AppState, unknown>>(
@@ -132,13 +147,13 @@ function check<T extends AppState, U extends Record<keyof AppState, unknown>>(
   return t;
 }
 
-
 const setImage: StateSetter<"setImage"> = (state, image, rects) => {
   const rectangles = getInitRectangles(image, rects, state.borderSafeSpace);
 
   return check({
     ...state,
-    selectedRectangleId: rectangles.length > 0 ? rectangles[0].id : SELECTED_NONE,
+    selectedRectangleId:
+      rectangles.length > 0 ? rectangles[0].id : SELECTED_NONE,
     rectangles,
     image,
   });
@@ -150,12 +165,8 @@ const addRectangle: StateSetter<"addRectangle"> = (state) => {
   }
 
   const nextId = getNextId(state.rectangles);
-  const newRect = createRectangle(
-    nextId,
-    state.image,
-    state.borderSafeSpace,
-  );
-  const rectangles = [...state.rectangles, newRect,];
+  const newRect = createRectangle(nextId, state.image, state.borderSafeSpace);
+  const rectangles = [...state.rectangles, newRect];
   persistRectangles(state.image, rectangles);
 
   return check({
@@ -216,20 +227,19 @@ export const useAppState = create<AppState>((set) => ({
   borderSafeSpace: 20,
   image: null,
   renderSmooth: false,
+  pinkBackground: false,
 
   // setters:
-  setImage: (image: AppImageData | null) =>
-    set((state) => setImage(state, image)),
+  setImage: (image, rects) => set((state) => setImage(state, image, rects)),
   addRectangle: () => set((state) => addRectangle(state)),
   removeRectangle: (id: number) => set((state) => removeRectangle(state, id)),
   selectRectangle: (id: number) => set((state) => selectRectangle(state, id)),
   moveRectangle: (id: number, points: Rect) =>
     set((state) => moveRectangle(state, id, points)),
   setRenderSmooth: (nextValue: boolean) =>
-    set((state) => ({
-      ...state,
-      renderSmooth: nextValue,
-    })),
+    set((state) => ({ ...state, renderSmooth: nextValue })),
+  setPinkBackground: (nextValue: boolean) =>
+    set((state) => ({ ...state, pinkBackground: nextValue })),
 }));
 
 export const useAppStatePartial = <T extends keyof AppState>(
