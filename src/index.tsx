@@ -8,14 +8,6 @@ import "./index.css";
 // TODO normalizer
 // TODO readme
 // TODO minify
-// TODO test on mobile, e.g. drag&drop, image select
-
-// | add example images to repo, with example rectangles
-// | favicon
-// | package.json
-// | index.html
-// | mobile: hide address bar
-// | local storage to save rectangles
 
 const root = document.getElementById("root");
 

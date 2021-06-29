@@ -1,9 +1,9 @@
-import { useEffect } from "preact/hooks";
+import { useEffect, useRef } from "preact/hooks";
 import PointerTracker, { Pointer } from "pointer-tracker";
 import { cancelEvent, sub2d } from "../utils";
 import { useLatest } from "./useLatest";
 
-const POINTER_ID = 0;
+const POINTER_ID_NOT_POINTING = -999;
 
 const getMousePosition = (pointer: Pointer): Point2d => ({
   x: pointer.pageX,
@@ -24,6 +24,10 @@ interface Callbacks {
 
 export const useDrag = (element: HTMLElement, callbacks: Callbacks): void => {
   const callbacksRef = useLatest(callbacks);
+  // firefox starts pointer.id from 0, chrome from 1.
+  // Yes, this is really happening.
+  // Of course this hack will never break, why would it?
+  const pointerIdRef = useRef(POINTER_ID_NOT_POINTING);
 
   useEffect(() => {
     if (element == null) {
@@ -39,9 +43,10 @@ export const useDrag = (element: HTMLElement, callbacks: Callbacks): void => {
     const tracker = new PointerTracker(element, {
       start(pointer, event) {
         cancelEvent(event);
-        if (pointer.id !== POINTER_ID) {
+        if (pointerIdRef.current !== POINTER_ID_NOT_POINTING) {
           return false;
         }
+        pointerIdRef.current = pointer.id;
 
         // console.log(`start p=${pointIdx}`, { pointer, event });
         startPos = getMousePosition(pointer);
@@ -52,7 +57,9 @@ export const useDrag = (element: HTMLElement, callbacks: Callbacks): void => {
       },
       move(_previousPointers, changedPointers, event) {
         cancelEvent(event);
-        const pointer = changedPointers.find((p) => p.id === POINTER_ID);
+        const pointer = changedPointers.find(
+          (p) => p.id === pointerIdRef.current,
+        );
         if (pointer == null) {
           return;
         }
@@ -64,9 +71,10 @@ export const useDrag = (element: HTMLElement, callbacks: Callbacks): void => {
       },
       end(pointer, event, _cancelled) {
         cancelEvent(event);
-        if (pointer.id !== POINTER_ID) {
+        if (pointer.id !== pointerIdRef.current) {
           return;
         }
+        pointerIdRef.current = POINTER_ID_NOT_POINTING;
 
         // console.log(`end p=${pointIdx}: ${dt.x},${dt.y}`, { pointer, event, cancelled });
         if (callbacksRef.current.onDragEnd) {
