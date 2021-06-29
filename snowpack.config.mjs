@@ -1,3 +1,7 @@
+import fs from "node:fs";
+
+const packageJson = JSON.parse(fs.readFileSync("./package.json", "utf-8"));
+
 /** @type {import("snowpack").SnowpackUserConfig } */
 export default {
   mount: {
@@ -22,7 +26,13 @@ export default {
   ],
   optimize: {
     /* Example: Bundle your final build: */
-    // "bundle": true,
+    // bundle: true,
+    // minify: true,
+    // target: "es2018",
+  },
+  env: {
+    APP_NAME: packageJson.name,
+    APP_VERSION: packageJson.version,
   },
   packageOptions: {
     /* ... */
@@ -32,6 +42,7 @@ export default {
   },
   buildOptions: {
     /* ... */
+    sourcemap: true,
   },
   alias: {
     react: "preact/compat",

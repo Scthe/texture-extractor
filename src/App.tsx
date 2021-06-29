@@ -8,8 +8,10 @@ import type { FileDropEvent } from "file-drop-element";
 import { RefrawWebGlRef, UVscreen } from "./screens/UVscreen";
 import { ImageScreen } from "./screens/ImageScreen";
 import { WelcomeModal } from "./screens/WelcomeModal";
+import { ErrorFallback } from "./screens/ErrorFallback";
 import { useAppState } from "./state/AppState";
 import { useLatest } from "./hooks/useLatest";
+import { withErrorBoundary } from "./utils/withErrorBoundary";
 import * as s from "./style";
 
 declare module "preact" {
@@ -67,4 +69,6 @@ function App(): h.JSX.Element {
   );
 }
 
-export default App;
+export default withErrorBoundary(App, {
+  fallback: ErrorFallback,
+});

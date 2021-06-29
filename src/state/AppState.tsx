@@ -36,6 +36,12 @@ type StateSetter<
 
 const localStorageKey = (image: AppImageData) => `image--${image.filename}`;
 
+export const resetImageStorage = (image: AppImageData | null): void => {
+  if (image != null) {
+    localStorage.removeItem(localStorageKey(image));
+  }
+};
+
 const _DEBUGcreateRectangle = (
   id: number,
   imageData: AppImageData,

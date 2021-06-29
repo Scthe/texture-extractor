@@ -620,6 +620,99 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sentry/browser@npm:6.8.0, @sentry/browser@npm:^6.8.0":
+  version: 6.8.0
+  resolution: "@sentry/browser@npm:6.8.0"
+  dependencies:
+    "@sentry/core": 6.8.0
+    "@sentry/types": 6.8.0
+    "@sentry/utils": 6.8.0
+    tslib: ^1.9.3
+  checksum: da36a4d9a930456d49084fba009d9f96e69e03483ffe5741deefc7c349e6259ca6a608392e779cf310c4c7b84f6553512aee64ce34fff2c03f1b31d88f50513f
+  languageName: node
+  linkType: hard
+
+"@sentry/core@npm:6.8.0":
+  version: 6.8.0
+  resolution: "@sentry/core@npm:6.8.0"
+  dependencies:
+    "@sentry/hub": 6.8.0
+    "@sentry/minimal": 6.8.0
+    "@sentry/types": 6.8.0
+    "@sentry/utils": 6.8.0
+    tslib: ^1.9.3
+  checksum: 290ed3798cb2a43097aafe84784c0a413563cdc6c499291e9d8774307553e5de05ae7d567ebafd65c98b1919cf006a7a8b28eeac61f278e341b9951f1d90ec43
+  languageName: node
+  linkType: hard
+
+"@sentry/hub@npm:6.8.0":
+  version: 6.8.0
+  resolution: "@sentry/hub@npm:6.8.0"
+  dependencies:
+    "@sentry/types": 6.8.0
+    "@sentry/utils": 6.8.0
+    tslib: ^1.9.3
+  checksum: 7c75cfa47318e9f58106f1f283f5661ff0db313435f0e2ff95d3aa47288886d150a45afb5e12b64c278f2225d13d98629af109b0a67c2933f6235e86fd1077f2
+  languageName: node
+  linkType: hard
+
+"@sentry/minimal@npm:6.8.0":
+  version: 6.8.0
+  resolution: "@sentry/minimal@npm:6.8.0"
+  dependencies:
+    "@sentry/hub": 6.8.0
+    "@sentry/types": 6.8.0
+    tslib: ^1.9.3
+  checksum: 3bd945481ca76df3f759f962640e2d2d9f679e3713f636c678cb147dce86667e93d8495a6ea392cd1c57be120c1485f72627bc6908359cb6ee939034a5feda66
+  languageName: node
+  linkType: hard
+
+"@sentry/react@npm:^6.8.0":
+  version: 6.8.0
+  resolution: "@sentry/react@npm:6.8.0"
+  dependencies:
+    "@sentry/browser": 6.8.0
+    "@sentry/minimal": 6.8.0
+    "@sentry/types": 6.8.0
+    "@sentry/utils": 6.8.0
+    hoist-non-react-statics: ^3.3.2
+    tslib: ^1.9.3
+  peerDependencies:
+    react: 15.x || 16.x || 17.x
+  checksum: b3bf232b8d269548e7f9962281bc9aed552c53f30bb774453eda475389a13d5d9b3dead52712051b21637d2ae889074baf4b6ed9fc4d4d7178568a11a03b5d3f
+  languageName: node
+  linkType: hard
+
+"@sentry/tracing@npm:^6.8.0":
+  version: 6.8.0
+  resolution: "@sentry/tracing@npm:6.8.0"
+  dependencies:
+    "@sentry/hub": 6.8.0
+    "@sentry/minimal": 6.8.0
+    "@sentry/types": 6.8.0
+    "@sentry/utils": 6.8.0
+    tslib: ^1.9.3
+  checksum: 0273c948e535d9e2768c27ee179440e6a59b5b2729d52f7804d1c18af4ffeea6055390ba5c8f5093804275601d2c146fc81b484dc36376ef5854415389947fde
+  languageName: node
+  linkType: hard
+
+"@sentry/types@npm:6.8.0, @sentry/types@npm:^6.8.0":
+  version: 6.8.0
+  resolution: "@sentry/types@npm:6.8.0"
+  checksum: ee530b301f74adae71c1fa18361b5fd23f3c980e2b13d28cdaf0b5b3cf3356fd7c7a5b4821b4a9fa3cbbaab0cffab4d306a669ec6a1d61b27423eed002907dfb
+  languageName: node
+  linkType: hard
+
+"@sentry/utils@npm:6.8.0":
+  version: 6.8.0
+  resolution: "@sentry/utils@npm:6.8.0"
+  dependencies:
+    "@sentry/types": 6.8.0
+    tslib: ^1.9.3
+  checksum: 6ad99b4e48a057ee4891d9d7b4ed45bd0004ce279ef7266a54154ec3aca37ba515a40f53e344acd7a4651fe3e7c016c2c5abaa19175432a76dab6315131ce1f4
+  languageName: node
+  linkType: hard
+
 "@sindresorhus/is@npm:^4.0.0":
   version: 4.0.1
   resolution: "@sindresorhus/is@npm:4.0.1"
@@ -3657,6 +3750,15 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"hoist-non-react-statics@npm:^3.3.2":
+  version: 3.3.2
+  resolution: "hoist-non-react-statics@npm:3.3.2"
+  dependencies:
+    react-is: ^16.7.0
+  checksum: d3e3791d6e3a2741ce0ba38e878081dec49247ef22982a990c80941ee1f564ef16cd5a511bcc8c5e54f1ce8205535e0414ca5feea722c0690c80040be7ebf9df
+  languageName: node
+  linkType: hard
+
 "hosted-git-info@npm:^2.1.4":
   version: 2.8.9
   resolution: "hosted-git-info@npm:2.8.9"
@@ -4973,6 +5075,13 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"normalize.css@npm:^8.0.1":
+  version: 8.0.1
+  resolution: "normalize.css@npm:8.0.1"
+  checksum: de6c137a14291c00fee60a1e9e9ab4b78f93d48dd7ab5baa2783dd62bf19b456403bf0585ad201bb84ed184348fd49b467ccfc707068bf342123d00d31801e98
+  languageName: node
+  linkType: hard
+
 "npm-bundled@npm:^1.1.1":
   version: 1.1.2
   resolution: "npm-bundled@npm:1.1.2"
@@ -5790,7 +5899,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"react-is@npm:^16.8.1":
+"react-is@npm:^16.7.0, react-is@npm:^16.8.1":
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
   checksum: 11bcf1267a314a522615f626f3ce3727a3a24cdbf61c4d452add3550a7875326669631326cfb1ba3e92b6f72244c32ffecf93ad21c0cad8455d3e169d0e3f060
@@ -6594,6 +6703,10 @@ fsevents@~2.1.2:
   dependencies:
     "@emotion/css": ^11.1.3
     "@prefresh/snowpack": ^3.0.0
+    "@sentry/browser": ^6.8.0
+    "@sentry/react": ^6.8.0
+    "@sentry/tracing": ^6.8.0
+    "@sentry/types": ^6.8.0
     "@snowpack/plugin-dotenv": ^2.1.0
     "@snowpack/plugin-typescript": ^1.2.1
     "@snowpack/web-test-runner-plugin": ^0.2.2
@@ -6615,6 +6728,7 @@ fsevents@~2.1.2:
     file-drop-element: ^1.0.1
     lodash.clonedeep: ^4.5.0
     lodash.debounce: ^4.0.8
+    normalize.css: ^8.0.1
     pinch-zoom-element: ^1.1.1
     pointer-tracker: ^2.4.0
     preact: ^10.5.13
@@ -6704,7 +6818,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"tslib@npm:^1.13.0, tslib@npm:^1.8.1":
+"tslib@npm:^1.13.0, tslib@npm:^1.8.1, tslib@npm:^1.9.3":
   version: 1.14.1
   resolution: "tslib@npm:1.14.1"
   checksum: f44fe7f216946b17d3e3074df3746372703cf24e9127b4c045511456e8e4bf25515fb0a1bb3937676cc305651c5d4fcb6377b0588a4c6a957e748c4c28905d17
