@@ -52,7 +52,7 @@ export const ImageSettings: FC<Props> = ({
           icon="close"
           title="Close current image and start with a new one"
           onClick={() => {
-            setImage(null);
+            setImage(null, undefined);
           }}
         >
           Close Image

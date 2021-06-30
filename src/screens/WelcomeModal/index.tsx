@@ -13,16 +13,22 @@ import { logError, logEvent } from "../../utils/log";
 import { ImageAvatar } from "./ImageAvatar";
 import { ExampleImage, EXAMPLE_IMAGES } from "./exampleImages";
 
-const getFileAnalytics = (f: File) => ({ fileSize: f.size, fileType: f.type });
+const getFileAnalytics = (f: File) => ({
+  m_fileSizeKB: Math.floor(f.size / 1024),
+  m_fileType: f.type,
+});
 
 const modal = css`
   max-width: 600px;
   padding-top: ${s.spacing(4)};
+  ${s.mqH(650)} {
+    margin-top: 0;
+  }
 `;
 
 const header = css`
   color: #464646;
-  font-size: 30px;
+  font-size: 1.85rem;
   font-weight: normal;
 `;
 
@@ -33,7 +39,7 @@ const githubLink = css`
 
   a {
     color: ${s.COLORS.greyDark};
-    font-size: 14px;
+    font-size: 0.85rem;
     cursor: pointer;
     text-decoration: none;
     &:hover {
@@ -55,11 +61,15 @@ const uploadImage = css`
 `;
 const uploadImageContent = css`
   position: relative;
+  height: 250px;
+  ${s.mqH(650)} {
+    height: 150px;
+  }
 `;
 
 const purpleSvg = css`
-  position: absolute;
   overflow: initial;
+  max-height: 100%;
 `;
 
 const purpleRect = css`
@@ -68,7 +78,7 @@ const purpleRect = css`
 `;
 
 const uploadButtonForm = css`
-  position: relative;
+  position: absolute;
 `;
 
 const uploadIcon = css`
@@ -193,9 +203,10 @@ export const WelcomeModal: FC<unknown> = () => {
         .then((imageData) => {
           logEvent("image_open", {
             ...getFileAnalytics(file),
-            exampleImg: exampleImg?.name,
-            width: imageData.width,
-            height: imageData.height,
+            m_example_name: exampleImg?.name,
+            m_image_width: imageData.width,
+            m_image_height: imageData.height,
+            m_isExample: exampleImg != null,
           });
           setImage(
             {
@@ -220,7 +231,7 @@ export const WelcomeModal: FC<unknown> = () => {
   const handleDemoClick = useCallback(
     (img: ExampleImage) => {
       hideError();
-      logEvent("example_picked", { type: img.name });
+      logEvent("example_picked", { m_example_type: img.name });
 
       getExampleAsFile(img)
         .then((f) => startEditorWithFile(f, img))
@@ -301,19 +312,15 @@ export const WelcomeModal: FC<unknown> = () => {
           </div>
 
           <section class={cx(s.flexCenter, uploadImage)}>
-            <div
-              class={cx(
-                s.size("250px"),
-                s.flexCenter,
-                s.flexAltCenter,
-                uploadImageContent,
-              )}
-            >
+            <div class={cx(s.flexCenter, s.flexAltCenter, uploadImageContent)}>
               <svg
-                class={cx(purpleSvg, s.size("100%"))}
-                preserveAspectRatio="xMidYMid slice"
+                class={cx(purpleSvg)}
+                preserveAspectRatio="xMidYMid meet"
+                width="435"
+                height="255"
+                viewBox="0 0 435 255"
               >
-                <g transform="translate(-100 0)">
+                <g transform="translate(0 0)">
                   <rect {...rectSharedProps} x="0" y="30" />
                   <rect {...rectSharedProps} x="85" y="0" />
                   <rect {...rectSharedProps} x="50" y="55" />

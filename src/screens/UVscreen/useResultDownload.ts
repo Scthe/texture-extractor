@@ -19,10 +19,12 @@ type DownloadData = Pick<
 
 function getAnalyticsParams(rects: SelectionRect[], data: DownloadData) {
   return {
-    isExample: data.image?.isExample,
-    image: [data.image?.data.width, data.image?.data.height],
-    renderSmooth: data.renderSmooth,
-    selections: rects.map((r) => getRectDimensions(r.points)),
+    m_isExample: data.image?.isExample,
+    m_image_width: data.image?.data.width,
+    m_image_height: data.image?.data.height,
+    m_renderSmooth: data.renderSmooth,
+    m_pinkBackground: data.pinkBackground,
+    m_selections: rects.map((r) => getRectDimensions(r.points)),
   };
 }
 

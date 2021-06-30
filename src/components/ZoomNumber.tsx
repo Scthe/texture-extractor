@@ -9,6 +9,9 @@ const container = css`
   background-color: var(--primary);
   padding: ${s.spacing(0.5, 4, 1)};
   border-bottom-left-radius: ${s.borderRadius("s")};
+  ${s.mqW(800)} {
+    display: none;
+  }
 `;
 
 interface Props {

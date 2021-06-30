@@ -2,7 +2,7 @@ const fs = require("fs").promises;
 
 module.exports = function loadRawFile(snowpackConfig, options) {
   return {
-    name: "Load raw file",
+    name: "snowpack-plugin-load-raw-file",
 
     resolve: {
       input: options.input || [".txt"],

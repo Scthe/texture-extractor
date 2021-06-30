@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-// TODO analytics
 
 import { captureException, addBreadcrumb, Severity } from "@sentry/react";
 import { useAppState } from "../state/AppState";
@@ -7,14 +6,18 @@ import { useAppState } from "../state/AppState";
 type EventParams = Record<string, unknown>;
 
 export const logEvent = (name: string, params: EventParams = {}): void => {
-  console.log("[EVENT]", name, params);
-
   addBreadcrumb({
     type: "app_event",
     message: name,
     level: Severity.Log,
     data: params,
   });
+
+  if (window.gtag != null) {
+    gtag("event", name, params);
+  } else {
+    console.log("[EVENT]", name, params);
+  }
 };
 
 type ErrorParams = Record<string, unknown>;

@@ -9,14 +9,9 @@ import "normalize.css";
 import "./index.css";
 import { getZustandState } from "./utils/log";
 
-// TODO readme
-// TODO sentry + sourcemaps + Error boundry that can reset rectangles for current image
-// TODO analytics
-// TODO local fonts. public/fonts/*, then in .css as "../fonts/*"
-// TODO minify
 // TODO try without debounce
-
-// | normalizer
+// TODO minify
+// TODO change algoritm to homography
 
 sentryInit({
   dsn: "https://19fdec013a2a4656b513d8491d2edc96@o825934.ingest.sentry.io/5839727",

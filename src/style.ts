@@ -110,6 +110,9 @@ export const modalDimmer = cx(
 
 export const pinchZoomStyle = cx(relative, wh100);
 
+export const mqH = (bpH: number): string => `@media (max-height: ${bpH}px)`;
+export const mqW = (bpW: number): string => `@media (max-width: ${bpW}px)`;
+
 export interface AppTheme {
   primary: string;
   primaryLight: string;

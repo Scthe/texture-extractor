@@ -19,6 +19,7 @@ export default {
       },
     ],
     ["./snowpack/loadRawFile.js", { input: [".vert", ".frag"] }],
+    ["./snowpack/htmlTemplate.js"],
   ],
   routes: [
     /* Enable an SPA Fallback in development: */
@@ -29,6 +30,14 @@ export default {
     // bundle: true,
     // minify: true,
     // target: "es2018",
+    bundle: false, // In case of bundle: false, it works normally.
+    minify: true,
+    target: "es2018",
+    splitting: true,
+    treeshake: true,
+    entrypoints: "auto",
+    manifest: true,
+    sourcemap: false,
   },
   env: {
     APP_NAME: packageJson.name,

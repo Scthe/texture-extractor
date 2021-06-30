@@ -936,6 +936,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/gtag.js@npm:^0.0.6":
+  version: 0.0.6
+  resolution: "@types/gtag.js@npm:0.0.6"
+  checksum: 6227237830df7a1c6ddaf2c456507bfb49522900a396b6d1ce28cbe5e4271b573f56cd6193a2c8aea1c8f37accbdc86f7551956ffa01c3e94c74ab7bd8cf6eea
+  languageName: node
+  linkType: hard
+
 "@types/http-assert@npm:*":
   version: 1.5.1
   resolution: "@types/http-assert@npm:1.5.1"
@@ -4595,6 +4602,13 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"lodash._reinterpolate@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "lodash._reinterpolate@npm:3.0.0"
+  checksum: 27513557d6fe526296324f1de9e1b8e8ac88ef2a2544a655e825f3ab0f52c5a675f1a73a0c9ff3c64fda031c56dfb4deb9dac7c7d21f9a04bc63dd7db5a5a73d
+  languageName: node
+  linkType: hard
+
 "lodash.camelcase@npm:^4.3.0":
   version: 4.3.0
   resolution: "lodash.camelcase@npm:4.3.0"
@@ -4620,6 +4634,25 @@ fsevents@~2.1.2:
   version: 4.6.2
   resolution: "lodash.merge@npm:4.6.2"
   checksum: 4e2bb42a87a148991458d7c384bc197e96f7115e9536fc8e2c86ae9e99ce1c1f693ff15eb85761952535f48d72253aed8e673d9f32dde3e671cd91e3fde220a7
+  languageName: node
+  linkType: hard
+
+"lodash.template@npm:^4.5.0":
+  version: 4.5.0
+  resolution: "lodash.template@npm:4.5.0"
+  dependencies:
+    lodash._reinterpolate: ^3.0.0
+    lodash.templatesettings: ^4.0.0
+  checksum: e27068e20b7a374938c20ab76a093dd49e9626bfbe1882d9d05d81efefe3210cfcd6ad24f1cb0d956ce57d75855fec17bd386a4aa54762a144bd7c0891ee7ee1
+  languageName: node
+  linkType: hard
+
+"lodash.templatesettings@npm:^4.0.0":
+  version: 4.2.0
+  resolution: "lodash.templatesettings@npm:4.2.0"
+  dependencies:
+    lodash._reinterpolate: ^3.0.0
+  checksum: 45546a5b76376b138ef4f01aa2722813127c639428eb9baef3fbac176b509ee2dab5cb9d1ee8267dbeeef8d49371f9a748af3df83649bf8b75fa54993f65b7aa
   languageName: node
   linkType: hard
 
@@ -6712,6 +6745,7 @@ fsevents@~2.1.2:
     "@snowpack/web-test-runner-plugin": ^0.2.2
     "@testing-library/preact": ^2.0.1
     "@types/chai": ^4.2.17
+    "@types/gtag.js": ^0.0.6
     "@types/lodash.clonedeep": ^4.5.6
     "@types/lodash.debounce": ^4.0.6
     "@types/mocha": ^8.2.2
@@ -6728,6 +6762,7 @@ fsevents@~2.1.2:
     file-drop-element: ^1.0.1
     lodash.clonedeep: ^4.5.0
     lodash.debounce: ^4.0.8
+    lodash.template: ^4.5.0
     normalize.css: ^8.0.1
     pinch-zoom-element: ^1.1.1
     pointer-tracker: ^2.4.0
