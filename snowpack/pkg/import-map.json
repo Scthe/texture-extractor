@@ -1,0 +1,21 @@
+{
+  "imports": {
+    "@emotion/css": "./@emotion/css.js",
+    "@sentry/browser": "./@sentry/browser.js",
+    "@sentry/react": "./@sentry/react.js",
+    "@sentry/tracing": "./@sentry/tracing.js",
+    "file-drop-element": "./file-drop-element.js",
+    "lodash.clonedeep": "./lodash.clonedeep.js",
+    "lodash.debounce": "./lodash.debounce.js",
+    "normalize.css": "./normalize.css",
+    "pinch-zoom-element": "./pinch-zoom-element.js",
+    "pointer-tracker": "./pointer-tracker.js",
+    "preact": "./preact.js",
+    "preact/compat": "./preact/compat.js",
+    "preact/devtools": "./preact/devtools.js",
+    "preact/hooks": "./preact/hooks.js",
+    "react": "./preact/compat.js",
+    "react-dom": "./preact/compat.js",
+    "zustand": "./zustand.js"
+  }
+}

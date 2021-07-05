@@ -1,0 +1,1 @@
+import{useCallback as t,useState as u}from"../../snowpack/pkg/preact/hooks.js";export const useBoolState=s=>{const[o,e]=u(s),a=t(()=>e(r=>!r),[]),c=t(()=>e(!0),[]),l=t(()=>e(!1),[]);return{value:o,setValue:e,toggle:a,setTrue:c,setFalse:l}};

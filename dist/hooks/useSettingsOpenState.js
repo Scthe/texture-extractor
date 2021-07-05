@@ -1,0 +1,1 @@
+import{useEffect as o}from"../../snowpack/pkg/preact/hooks.js";import{useAppStatePartial as a}from"../state/AppState.js";import{useBoolState as p}from"./useBoolState.js";export const useSettingsOpenState=()=>{const{image:t}=a("image"),{value:s,setValue:e}=p(!1);return o(()=>{e(t!=null)},[t]),[s,e]};

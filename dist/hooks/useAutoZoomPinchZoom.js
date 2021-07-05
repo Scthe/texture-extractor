@@ -1,0 +1,1 @@
+import{useEffect as l}from"../../snowpack/pkg/preact/hooks.js";export const useAutoZoomPinchZoom=(o,n)=>{l(()=>{if(o){const c={relativeTo:"content",allowChangeEvent:!0},t=n.current,r=t.clientWidth,a=t.clientHeight,i=o.data.width,h=o.data.height,s=i/r,e=h/a;s>e?(t.scaleTo(1/s,c),t.setTransform({x:0,y:(a-h/s)/2})):(t.scaleTo(1/e,c),t.setTransform({x:(r-i/e)/2,y:0}))}},[o,n])};
