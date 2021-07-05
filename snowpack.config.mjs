@@ -27,17 +27,14 @@ export default {
   ],
   optimize: {
     /* Example: Bundle your final build: */
-    // bundle: true,
-    // minify: true,
-    // target: "es2018",
-    bundle: false, // In case of bundle: false, it works normally.
+    bundle: true,
     minify: true,
     target: "es2018",
     splitting: true,
     treeshake: true,
     entrypoints: "auto",
     manifest: true,
-    sourcemap: false,
+    sourcemap: true,
   },
   env: {
     APP_NAME: packageJson.name,
