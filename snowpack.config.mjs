@@ -53,6 +53,7 @@ export default {
     /* ... */
     sourcemap: true,
     baseUrl: "",
+    metaUrlPath: "snowpack", // jekyll does not like files starting with '_'
   },
   alias: {
     react: "preact/compat",
