@@ -52,6 +52,7 @@ export default {
   buildOptions: {
     /* ... */
     sourcemap: true,
+    baseUrl: "",
   },
   alias: {
     react: "preact/compat",

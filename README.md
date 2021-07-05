@@ -3,6 +3,7 @@
 [Texture Extractor][web-app] allows you to cut fragments of an image and map them into perfect rectangles.
 
 ![gh-img]
+
 *Each colored area on the right will be mapped into a rectangle. The result for currently selected area (higher purple one) shown on the left. The lines that on original image are skewed are perfectly horizontal on the result image.*
 
 
@@ -38,7 +39,7 @@ Alternatively, `yarn build` for production build, outputs will be in `build` fol
 
 ## Licence
 
-MIT, except [src/utils/decodeImage.ts][src/utils/decodeImage.ts].
+MIT, except [src/utils/decodeImage.ts](src/utils/decodeImage.ts).
 
 
 ## 3rd party attributions
@@ -47,10 +48,10 @@ MIT, except [src/utils/decodeImage.ts][src/utils/decodeImage.ts].
   * [https://unsplash.com/photos/mnwKi9TVl8w](https://unsplash.com/photos/mnwKi9TVl8w)
   * [https://unsplash.com/photos/3SVr-CfTYDU](https://unsplash.com/photos/3SVr-CfTYDU)
   * [https://unsplash.com/photos/ffFnddUEaL4](https://unsplash.com/photos/ffFnddUEaL4)
-* [squoosh][https://github.com/GoogleChromeLabs/squoosh]
+* [squoosh](https://github.com/GoogleChromeLabs/squoosh)
 
-[web-app]: https://scthe.github.io/texture-extractor/index.html
-[gh-img]: src/example-images/github-showcase.jpg
+[web-app]: https://scthe.github.io/texture-extractor
+[gh-img]:src/example-images/github-showcase.jpg
 [unsplash]: https://unsplash.com/
 [yarn-2]: https://yarnpkg.com/getting-started/install
 [texture-ripper]: http://renderhjs.net/shoebox/textureRipper.htm

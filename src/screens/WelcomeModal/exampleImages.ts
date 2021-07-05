@@ -32,12 +32,13 @@ export interface ExampleImage {
 }
 
 const p = (x: number, y: number) => ({ x, y });
+const makeRel = (s: string) => s.startsWith("/") ? s.substring(1) : s;
 
 export const EXAMPLE_IMAGES: ExampleImage[] = [
   {
     name: "Architecture",
-    url: exampleArch,
-    thumbUrl: exampleArchThumb,
+    url: makeRel(exampleArch),
+    thumbUrl: makeRel(exampleArchThumb),
     tooltip: "Extract perspective-corrected architectural details",
     points: [
       [p(548.530, 1017.152), p(793.189, 984.457), p(556.082, 829.622), p(794.624, 786.030)],
@@ -53,8 +54,8 @@ export const EXAMPLE_IMAGES: ExampleImage[] = [
   },
   {
     name: "Patterns",
-    url: examplePattern,
-    thumbUrl: examplePatternThumb,
+    url: makeRel(examplePattern),
+    thumbUrl: makeRel(examplePatternThumb),
     tooltip: "Get pattern details, not matter distortions or shape",
     points: [
       [p(509.479, 1777.211), p(796.159, 1712.577), p(517.094, 1664.247), p(803.803, 1613.832)],
@@ -73,8 +74,8 @@ export const EXAMPLE_IMAGES: ExampleImage[] = [
   },
   {
     name: "3d modeling",
-    url: exampleCG,
-    thumbUrl: exampleCGThumb,
+    url: makeRel(exampleCG),
+    thumbUrl: makeRel(exampleCGThumb),
     tooltip: "Cut fragments of images to use in your own work",
     points: [
       [p(660.553, 1455.000), p(954.334, 1455.000), p(667.212, 1391.330), p(937.660, 1386.182)],

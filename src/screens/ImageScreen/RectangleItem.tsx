@@ -80,7 +80,12 @@ export const RectangleItem: FC<Props> = ({ rect, isDeletable }) => {
 
   return (
     <li
-      class={cx(s.flexSides, rectItem, isSelected && rectItemSelected)}
+      class={cx(
+        s.flexSides,
+        s.flexAltCenter,
+        rectItem,
+        isSelected && rectItemSelected,
+      )}
       onClick={select}
     >
       <div
